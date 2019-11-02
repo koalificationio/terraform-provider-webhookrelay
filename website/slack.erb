@@ -1,0 +1,33 @@
+<% wrap_layout :inner do %>
+    <% content_for :sidebar do %>
+        <div class="docs-sidebar hidden-print affix-top" role="complementary">
+            <a href="#" class="subnav-toggle">(Expand/collapse all)</a>
+
+            <ul class="nav docs-sidenav">
+                <li>
+                    <a href="/docs/providers/index.html">All Providers</a>
+                </li>
+
+                <li>
+                    <a href="/docs/providers/webhookrelay/index.html">webhookrelay Provider</a>
+                </li>
+
+                <li>
+                <a href="#">Data Sources</a>
+                    <ul class="nav">
+
+                        <li>
+                            <a href="/docs/providers/webhookrelay/d/channel.html">webhookrelay_channel</a>
+                        </li>
+
+                        <li>
+                            <a href="/docs/providers/webhookrelay/d/user.html">webhookrelay_user</a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    <% end %>
+
+    <%= yield %>
+<% end %>

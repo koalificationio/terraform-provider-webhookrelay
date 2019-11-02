@@ -208,7 +208,7 @@ github.com/hashicorp/terraform-plugin-sdk/terraform
 github.com/hashicorp/yamux
 # github.com/jmespath/go-jmespath v0.0.0-20180206201540-c2b33e8439af
 github.com/jmespath/go-jmespath
-# github.com/koalificationio/go-webhookrelay v0.1.2 => /Users/ayarmoliuk/dev/tf/go-webhookrelay
+# github.com/koalificationio/go-webhookrelay v0.1.3
 github.com/koalificationio/go-webhookrelay/pkg/client
 github.com/koalificationio/go-webhookrelay/pkg/openapi/client
 github.com/koalificationio/go-webhookrelay/pkg/openapi/client/buckets
