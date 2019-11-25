@@ -17,9 +17,6 @@ func resourceWebhookrelayToken() *schema.Resource {
 		Read:   resourceWebhookrelayTokenRead,
 		Update: resourceWebhookrelayTokenUpdate,
 		Delete: resourceWebhookrelayTokenDelete,
-		Importer: &schema.ResourceImporter{
-			State: schema.ImportStatePassthrough,
-		},
 
 		Schema: map[string]*schema.Schema{
 			"description": {

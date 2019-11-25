@@ -6,7 +6,7 @@ description: |-
   Terraform webhookrelay provider.
 ---
 
-# webhookrelay Provider
+# Webhookrelay Provider
 
 The provider needs to be configured
 with the proper credentials before it can be used.
@@ -18,8 +18,9 @@ Use the navigation to the left to read about the available resources.
 ```hcl
 # Configure the webhookrelay Provider
 provider "webhookrelay" {
-  version   = "~> 0.1"
-  api_token = "123abc"
+  version    = "~> 0.1"
+  api_key    = "123abc"
+  api_secret = "1234567"
 }
 ```
 
@@ -29,5 +30,7 @@ In addition to [generic `provider` arguments](https://www.terraform.io/docs/conf
 (e.g. `alias` and `version`), the following arguments are supported in the webhookrelay
  `provider` block:
 
-* `api_token` - (Optional) This is the webhookrelay api token. It must be provided, but
-  it can also be sourced from the `webhookrelay_TOKEN` environment variable.
+* `api_key` - (Optional) This is the Webhookrelay API key. It must be provided, but
+  it can also be sourced from the `RELAY_KEY` environment variable.
+* `api_secret` - (Optional) This is the Webhookrelay API secret. It must be provided, but
+  it can also be sourced from the `RELAY_SECRET` environment variable.

@@ -1,0 +1,51 @@
+---
+layout: "webhookrelay"
+page_title: "Webhookrelay: webhookrelay_bucket"
+description: |-
+  Manage Webhookrelay bucket.
+---
+
+# Resource: webhookrelay_bucket
+
+Use this resource to manage Webhookrelay bucket.
+
+## Example Usage
+
+```hcl
+resource "webhookrelay_bucket" "foo" {
+  name                 = "foo"
+  description          = "bar"
+}
+```
+
+## Argument Reference
+
+* `name` - (Required) Name of a bucket to create.
+* `description` - (Optional) description of a bucket.
+* `delete_default_input` - (Optional) delete default input that is added upon bucket creation. You can create new inputs using [`resource_webhookrelay_input`][1] resource.
+
+
+## Attributes Reference
+
+`id` is set to the ID of the bucket. In addition, the following attributes are exported:
+
+* `default_input` - configuration of default input. See [Inputs](#inputs) below for details.
+* `input` - configuration of other inputs available in bucket. See [Inputs](#inputs) below for details.
+
+### Inputs
+
+The `input` mapping provides following attributes:
+
+* `name`
+* `description`
+* `id` - ID of an input. It can be used in webhook url like: `https://my.webhookrelay.com/v1/webhooks/<input id>`
+
+## Import
+
+Bucket can be imported using the `id`, e.g.
+
+```
+$ terraform import webhookrelay_bucket.foo e3cb4587-6e3d-4c64-9b50-e9c4c7ce27aa
+```
+
+[1]: /docs/providers/webhookrelay/r/input.html
