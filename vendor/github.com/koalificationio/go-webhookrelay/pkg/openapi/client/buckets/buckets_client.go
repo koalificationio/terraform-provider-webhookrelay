@@ -165,7 +165,9 @@ func (a *Client) PostV1Buckets(params *PostV1BucketsParams) (*PostV1BucketsCreat
 }
 
 /*
-PutV1BucketsBucketID updates bucket details
+PutV1BucketsBucketID updates bucket
+
+Update bucket.
 */
 func (a *Client) PutV1BucketsBucketID(params *PutV1BucketsBucketIDParams) (*PutV1BucketsBucketIDOK, error) {
 	// TODO: Validate the params before sending

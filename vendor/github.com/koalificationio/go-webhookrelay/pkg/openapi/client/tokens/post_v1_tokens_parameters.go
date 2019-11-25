@@ -64,7 +64,7 @@ for the post v1 tokens operation typically these are written to a http.Request
 type PostV1TokensParams struct {
 
 	/*Body*/
-	Body *models.TokenRequest
+	Body *models.Token
 
 	timeout    time.Duration
 	Context    context.Context
@@ -105,13 +105,13 @@ func (o *PostV1TokensParams) SetHTTPClient(client *http.Client) {
 }
 
 // WithBody adds the body to the post v1 tokens params
-func (o *PostV1TokensParams) WithBody(body *models.TokenRequest) *PostV1TokensParams {
+func (o *PostV1TokensParams) WithBody(body *models.Token) *PostV1TokensParams {
 	o.SetBody(body)
 	return o
 }
 
 // SetBody adds the body to the post v1 tokens params
-func (o *PostV1TokensParams) SetBody(body *models.TokenRequest) {
+func (o *PostV1TokensParams) SetBody(body *models.Token) {
 	o.Body = body
 }
 

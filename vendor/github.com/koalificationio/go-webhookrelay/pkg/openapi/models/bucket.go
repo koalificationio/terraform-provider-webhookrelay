@@ -22,24 +22,39 @@ type Bucket struct {
 	Auth *BucketAuth `json:"auth,omitempty"`
 
 	// created at
+	// Read Only: true
 	CreatedAt int64 `json:"created_at,omitempty"`
 
 	// description
 	Description string `json:"description,omitempty"`
 
+	// If ephemeral is enabled, Webhook Relay will not persist request body, headers or response details
+	Ephemeral bool `json:"ephemeral,omitempty"`
+
 	// id
+	// Read Only: true
 	ID string `json:"id,omitempty"`
 
 	// inputs
+	// Read Only: true
 	Inputs []*Input `json:"inputs"`
 
 	// name
 	Name string `json:"name,omitempty"`
 
 	// outputs
+	// Read Only: true
 	Outputs []*Output `json:"outputs"`
 
+	// Enable/disabled streaming to WebSocket clients from this bucket
+	Stream bool `json:"stream,omitempty"`
+
+	// Indicates that webhooks will not be received due to quota limits
+	// Read Only: true
+	Suspended *bool `json:"suspended,omitempty"`
+
 	// updated at
+	// Read Only: true
 	UpdatedAt int64 `json:"updated_at,omitempty"`
 }
 

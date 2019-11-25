@@ -55,7 +55,7 @@ func NewPutV1BucketsBucketIDOK() *PutV1BucketsBucketIDOK {
 
 /*PutV1BucketsBucketIDOK handles this case with default header values.
 
-Successful Response
+Bucket updated
 */
 type PutV1BucketsBucketIDOK struct {
 	Payload *models.Bucket
@@ -88,7 +88,7 @@ func NewPutV1BucketsBucketIDBadRequest() *PutV1BucketsBucketIDBadRequest {
 
 /*PutV1BucketsBucketIDBadRequest handles this case with default header values.
 
-Bad request (check response message)
+Invalid bucket update request supplied
 */
 type PutV1BucketsBucketIDBadRequest struct {
 }

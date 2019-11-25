@@ -64,7 +64,7 @@ for the put v1 tokens token ID operation typically these are written to a http.R
 type PutV1TokensTokenIDParams struct {
 
 	/*Body*/
-	Body *models.TokenRequest
+	Body *models.Token
 	/*TokenID
 	  ID of token
 
@@ -110,13 +110,13 @@ func (o *PutV1TokensTokenIDParams) SetHTTPClient(client *http.Client) {
 }
 
 // WithBody adds the body to the put v1 tokens token ID params
-func (o *PutV1TokensTokenIDParams) WithBody(body *models.TokenRequest) *PutV1TokensTokenIDParams {
+func (o *PutV1TokensTokenIDParams) WithBody(body *models.Token) *PutV1TokensTokenIDParams {
 	o.SetBody(body)
 	return o
 }
 
 // SetBody adds the body to the put v1 tokens token ID params
-func (o *PutV1TokensTokenIDParams) SetBody(body *models.TokenRequest) {
+func (o *PutV1TokensTokenIDParams) SetBody(body *models.Token) {
 	o.Body = body
 }
 

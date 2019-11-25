@@ -4,5 +4,5 @@ go 1.13
 
 require (
 	github.com/hashicorp/terraform-plugin-sdk v1.2.0
-	github.com/koalificationio/go-webhookrelay v0.1.3
+	github.com/koalificationio/go-webhookrelay v0.2.0
 )

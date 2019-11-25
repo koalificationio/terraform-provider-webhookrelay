@@ -8,7 +8,6 @@ package models
 import (
 	strfmt "github.com/go-openapi/strfmt"
 
-	"github.com/go-openapi/errors"
 	"github.com/go-openapi/swag"
 )
 
@@ -16,60 +15,15 @@ import (
 // swagger:model TokenCreateResponse
 type TokenCreateResponse struct {
 
-	// api access
-	APIAccess string `json:"api_access,omitempty"`
-
-	// created at
-	CreatedAt int64 `json:"created_at,omitempty"`
-
-	// description
-	Description string `json:"description,omitempty"`
-
-	// Token ID is used as a key
-	ID string `json:"id,omitempty"`
-
-	// last login
-	LastLogin string `json:"last_login,omitempty"`
-
-	// scopes
-	Scopes *TokenScopes `json:"scopes,omitempty"`
+	// Token key, this is an alias to token ID
+	Key string `json:"key,omitempty"`
 
 	// This is the only time secret is revealed as it is already encrypted by the system
 	Secret string `json:"secret,omitempty"`
-
-	// updated at
-	UpdatedAt int64 `json:"updated_at,omitempty"`
 }
 
 // Validate validates this token create response
 func (m *TokenCreateResponse) Validate(formats strfmt.Registry) error {
-	var res []error
-
-	if err := m.validateScopes(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if len(res) > 0 {
-		return errors.CompositeValidationError(res...)
-	}
-	return nil
-}
-
-func (m *TokenCreateResponse) validateScopes(formats strfmt.Registry) error {
-
-	if swag.IsZero(m.Scopes) { // not required
-		return nil
-	}
-
-	if m.Scopes != nil {
-		if err := m.Scopes.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("scopes")
-			}
-			return err
-		}
-	}
-
 	return nil
 }
 

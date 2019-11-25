@@ -64,7 +64,7 @@ for the put v1 buckets bucket ID outputs output ID operation typically these are
 type PutV1BucketsBucketIDOutputsOutputIDParams struct {
 
 	/*Body*/
-	Body *models.OutputRequest
+	Body *models.Output
 	/*BucketID
 	  ID of a bucket to create input in
 
@@ -115,13 +115,13 @@ func (o *PutV1BucketsBucketIDOutputsOutputIDParams) SetHTTPClient(client *http.C
 }
 
 // WithBody adds the body to the put v1 buckets bucket ID outputs output ID params
-func (o *PutV1BucketsBucketIDOutputsOutputIDParams) WithBody(body *models.OutputRequest) *PutV1BucketsBucketIDOutputsOutputIDParams {
+func (o *PutV1BucketsBucketIDOutputsOutputIDParams) WithBody(body *models.Output) *PutV1BucketsBucketIDOutputsOutputIDParams {
 	o.SetBody(body)
 	return o
 }
 
 // SetBody adds the body to the put v1 buckets bucket ID outputs output ID params
-func (o *PutV1BucketsBucketIDOutputsOutputIDParams) SetBody(body *models.OutputRequest) {
+func (o *PutV1BucketsBucketIDOutputsOutputIDParams) SetBody(body *models.Output) {
 	o.Body = body
 }
 

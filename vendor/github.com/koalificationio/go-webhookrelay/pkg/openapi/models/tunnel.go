@@ -6,10 +6,13 @@ package models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"encoding/json"
+
 	strfmt "github.com/go-openapi/strfmt"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/swag"
+	"github.com/go-openapi/validate"
 )
 
 // Tunnel Tunnel
@@ -20,9 +23,11 @@ type Tunnel struct {
 	Auth *TunnelAuth `json:"auth,omitempty"`
 
 	// created at
+	// Read Only: true
 	CreatedAt int64 `json:"created_at,omitempty"`
 
-	// crypto
+	// Tunnel encryption type
+	// Enum: [off flexible full full-strict tls-pass-through]
 	Crypto string `json:"crypto,omitempty"`
 
 	// description
@@ -31,13 +36,14 @@ type Tunnel struct {
 	// destination
 	Destination string `json:"destination,omitempty"`
 
-	// group
+	// Groups allow agents to subscribe to one or more tunnels
 	Group string `json:"group,omitempty"`
 
 	// host
 	Host string `json:"host,omitempty"`
 
 	// id
+	// Read Only: true
 	ID string `json:"id,omitempty"`
 
 	// name
@@ -46,7 +52,12 @@ type Tunnel struct {
 	// protocol
 	Protocol string `json:"protocol,omitempty"`
 
+	// Tunnel region
+	// Enum: [ us-west eu au]
+	Region string `json:"region,omitempty"`
+
 	// updated at
+	// Read Only: true
 	UpdatedAt int64 `json:"updated_at,omitempty"`
 }
 
@@ -55,6 +66,14 @@ func (m *Tunnel) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.validateAuth(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateCrypto(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateRegion(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -77,6 +96,107 @@ func (m *Tunnel) validateAuth(formats strfmt.Registry) error {
 			}
 			return err
 		}
+	}
+
+	return nil
+}
+
+var tunnelTypeCryptoPropEnum []interface{}
+
+func init() {
+	var res []string
+	if err := json.Unmarshal([]byte(`["off","flexible","full","full-strict","tls-pass-through"]`), &res); err != nil {
+		panic(err)
+	}
+	for _, v := range res {
+		tunnelTypeCryptoPropEnum = append(tunnelTypeCryptoPropEnum, v)
+	}
+}
+
+const (
+
+	// TunnelCryptoOff captures enum value "off"
+	TunnelCryptoOff string = "off"
+
+	// TunnelCryptoFlexible captures enum value "flexible"
+	TunnelCryptoFlexible string = "flexible"
+
+	// TunnelCryptoFull captures enum value "full"
+	TunnelCryptoFull string = "full"
+
+	// TunnelCryptoFullStrict captures enum value "full-strict"
+	TunnelCryptoFullStrict string = "full-strict"
+
+	// TunnelCryptoTLSPassThrough captures enum value "tls-pass-through"
+	TunnelCryptoTLSPassThrough string = "tls-pass-through"
+)
+
+// prop value enum
+func (m *Tunnel) validateCryptoEnum(path, location string, value string) error {
+	if err := validate.Enum(path, location, value, tunnelTypeCryptoPropEnum); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (m *Tunnel) validateCrypto(formats strfmt.Registry) error {
+
+	if swag.IsZero(m.Crypto) { // not required
+		return nil
+	}
+
+	// value enum
+	if err := m.validateCryptoEnum("crypto", "body", m.Crypto); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+var tunnelTypeRegionPropEnum []interface{}
+
+func init() {
+	var res []string
+	if err := json.Unmarshal([]byte(`["","us-west","eu","au"]`), &res); err != nil {
+		panic(err)
+	}
+	for _, v := range res {
+		tunnelTypeRegionPropEnum = append(tunnelTypeRegionPropEnum, v)
+	}
+}
+
+const (
+
+	// TunnelRegion captures enum value ""
+	TunnelRegion string = ""
+
+	// TunnelRegionUsWest captures enum value "us-west"
+	TunnelRegionUsWest string = "us-west"
+
+	// TunnelRegionEu captures enum value "eu"
+	TunnelRegionEu string = "eu"
+
+	// TunnelRegionAu captures enum value "au"
+	TunnelRegionAu string = "au"
+)
+
+// prop value enum
+func (m *Tunnel) validateRegionEnum(path, location string, value string) error {
+	if err := validate.Enum(path, location, value, tunnelTypeRegionPropEnum); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (m *Tunnel) validateRegion(formats strfmt.Registry) error {
+
+	if swag.IsZero(m.Region) { // not required
+		return nil
+	}
+
+	// value enum
+	if err := m.validateRegionEnum("region", "body", m.Region); err != nil {
+		return err
 	}
 
 	return nil

@@ -64,7 +64,7 @@ for the put v1 buckets bucket ID operation typically these are written to a http
 type PutV1BucketsBucketIDParams struct {
 
 	/*Body*/
-	Body *models.BucketRequest
+	Body *models.Bucket
 	/*BucketID
 	  ID of a bucket to return
 
@@ -110,13 +110,13 @@ func (o *PutV1BucketsBucketIDParams) SetHTTPClient(client *http.Client) {
 }
 
 // WithBody adds the body to the put v1 buckets bucket ID params
-func (o *PutV1BucketsBucketIDParams) WithBody(body *models.BucketRequest) *PutV1BucketsBucketIDParams {
+func (o *PutV1BucketsBucketIDParams) WithBody(body *models.Bucket) *PutV1BucketsBucketIDParams {
 	o.SetBody(body)
 	return o
 }
 
 // SetBody adds the body to the put v1 buckets bucket ID params
-func (o *PutV1BucketsBucketIDParams) SetBody(body *models.BucketRequest) {
+func (o *PutV1BucketsBucketIDParams) SetBody(body *models.Bucket) {
 	o.Body = body
 }
 

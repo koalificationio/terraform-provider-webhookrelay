@@ -64,7 +64,7 @@ for the post v1 tunnels operation typically these are written to a http.Request
 type PostV1TunnelsParams struct {
 
 	/*Body*/
-	Body *models.TunnelCreateRequest
+	Body *models.Tunnel
 
 	timeout    time.Duration
 	Context    context.Context
@@ -105,13 +105,13 @@ func (o *PostV1TunnelsParams) SetHTTPClient(client *http.Client) {
 }
 
 // WithBody adds the body to the post v1 tunnels params
-func (o *PostV1TunnelsParams) WithBody(body *models.TunnelCreateRequest) *PostV1TunnelsParams {
+func (o *PostV1TunnelsParams) WithBody(body *models.Tunnel) *PostV1TunnelsParams {
 	o.SetBody(body)
 	return o
 }
 
 // SetBody adds the body to the post v1 tunnels params
-func (o *PostV1TunnelsParams) SetBody(body *models.TunnelCreateRequest) {
+func (o *PostV1TunnelsParams) SetBody(body *models.Tunnel) {
 	o.Body = body
 }
 

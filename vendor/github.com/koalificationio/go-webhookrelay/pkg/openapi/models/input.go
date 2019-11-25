@@ -15,19 +15,31 @@ import (
 // swagger:model Input
 type Input struct {
 
+	// Response body to return when this input receives a webhook
+	Body string `json:"body,omitempty"`
+
 	// created at
+	// Read Only: true
 	CreatedAt int64 `json:"created_at,omitempty"`
 
 	// description
 	Description string `json:"description,omitempty"`
 
+	// headers
+	Headers Headers `json:"headers,omitempty"`
+
 	// id
+	// Read Only: true
 	ID string `json:"id,omitempty"`
 
 	// name
 	Name string `json:"name,omitempty"`
 
+	// Response status code to return when this input receives a webhook
+	StatusCode int64 `json:"status_code,omitempty"`
+
 	// updated at
+	// Read Only: true
 	UpdatedAt int64 `json:"updated_at,omitempty"`
 }
 

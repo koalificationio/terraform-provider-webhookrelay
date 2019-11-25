@@ -16,9 +16,11 @@ import (
 type TunnelAuth struct {
 
 	// created at
+	// Read Only: true
 	CreatedAt int64 `json:"created_at,omitempty"`
 
 	// id
+	// Read Only: true
 	ID string `json:"id,omitempty"`
 
 	// password
@@ -31,6 +33,7 @@ type TunnelAuth struct {
 	Type string `json:"type,omitempty"`
 
 	// updated at
+	// Read Only: true
 	UpdatedAt int64 `json:"updated_at,omitempty"`
 
 	// username

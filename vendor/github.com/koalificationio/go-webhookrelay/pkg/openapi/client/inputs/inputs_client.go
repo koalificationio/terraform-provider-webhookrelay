@@ -98,6 +98,42 @@ func (a *Client) PostV1BucketsBucketIDInputs(params *PostV1BucketsBucketIDInputs
 	panic(msg)
 }
 
+/*
+PutV1BucketsBucketIDInputsInputID updates input
+
+Update input endpoint response code, body or headers.
+*/
+func (a *Client) PutV1BucketsBucketIDInputsInputID(params *PutV1BucketsBucketIDInputsInputIDParams) (*PutV1BucketsBucketIDInputsInputIDOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewPutV1BucketsBucketIDInputsInputIDParams()
+	}
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
+		ID:                 "PutV1BucketsBucketIDInputsInputID",
+		Method:             "PUT",
+		PathPattern:        "/v1/buckets/{bucketID}/inputs/{inputID}",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"https"},
+		Params:             params,
+		Reader:             &PutV1BucketsBucketIDInputsInputIDReader{formats: a.formats},
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	})
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*PutV1BucketsBucketIDInputsInputIDOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for PutV1BucketsBucketIDInputsInputID: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
 // SetTransport changes the transport on the client
 func (a *Client) SetTransport(transport runtime.ClientTransport) {
 	a.transport = transport

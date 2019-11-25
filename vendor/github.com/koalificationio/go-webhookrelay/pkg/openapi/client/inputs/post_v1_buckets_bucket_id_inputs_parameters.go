@@ -64,7 +64,7 @@ for the post v1 buckets bucket ID inputs operation typically these are written t
 type PostV1BucketsBucketIDInputsParams struct {
 
 	/*Body*/
-	Body *models.InputRequest
+	Body *models.Input
 	/*BucketID
 	  ID of a bucket to create input in
 
@@ -110,13 +110,13 @@ func (o *PostV1BucketsBucketIDInputsParams) SetHTTPClient(client *http.Client) {
 }
 
 // WithBody adds the body to the post v1 buckets bucket ID inputs params
-func (o *PostV1BucketsBucketIDInputsParams) WithBody(body *models.InputRequest) *PostV1BucketsBucketIDInputsParams {
+func (o *PostV1BucketsBucketIDInputsParams) WithBody(body *models.Input) *PostV1BucketsBucketIDInputsParams {
 	o.SetBody(body)
 	return o
 }
 
 // SetBody adds the body to the post v1 buckets bucket ID inputs params
-func (o *PostV1BucketsBucketIDInputsParams) SetBody(body *models.InputRequest) {
+func (o *PostV1BucketsBucketIDInputsParams) SetBody(body *models.Input) {
 	o.Body = body
 }
 

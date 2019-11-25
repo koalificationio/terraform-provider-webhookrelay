@@ -64,7 +64,7 @@ for the put v1 tunnels tunnel ID operation typically these are written to a http
 type PutV1TunnelsTunnelIDParams struct {
 
 	/*Body*/
-	Body *models.TunnelCreateRequest
+	Body *models.Tunnel
 	/*TunnelID
 	  ID of tunnel to return
 
@@ -110,13 +110,13 @@ func (o *PutV1TunnelsTunnelIDParams) SetHTTPClient(client *http.Client) {
 }
 
 // WithBody adds the body to the put v1 tunnels tunnel ID params
-func (o *PutV1TunnelsTunnelIDParams) WithBody(body *models.TunnelCreateRequest) *PutV1TunnelsTunnelIDParams {
+func (o *PutV1TunnelsTunnelIDParams) WithBody(body *models.Tunnel) *PutV1TunnelsTunnelIDParams {
 	o.SetBody(body)
 	return o
 }
 
 // SetBody adds the body to the put v1 tunnels tunnel ID params
-func (o *PutV1TunnelsTunnelIDParams) SetBody(body *models.TunnelCreateRequest) {
+func (o *PutV1TunnelsTunnelIDParams) SetBody(body *models.Tunnel) {
 	o.Body = body
 }
 
