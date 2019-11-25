@@ -37,6 +37,7 @@ func Provider() terraform.ResourceProvider {
 			"webhookrelay_bucket": resourceWebhookrelayBucket(),
 			"webhookrelay_input":  resourceWebhookrelayInput(),
 			"webhookrelay_output": resourceWebhookrelayOutput(),
+			"webhookrelay_token":  resourceWebhookrelayToken(),
 		},
 
 		ConfigureFunc: providerConfigure,

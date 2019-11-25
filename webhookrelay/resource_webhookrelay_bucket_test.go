@@ -33,14 +33,14 @@ func init() {
 					for _, i := range b.Inputs {
 						err := deleteInput(client, b.ID, i.ID)
 						if err != nil {
-							log.Printf("Error destroying input %s during sweep: %s", i.ID, err)
+							log.Printf("error destroying input %s during sweep: %s", i.ID, err)
 						}
 					}
 
 					params := buckets.NewDeleteV1BucketsBucketIDParams().WithBucketID(b.ID)
 					_, err := client.Buckets.DeleteV1BucketsBucketID(params)
 					if err != nil {
-						log.Printf("Error destroying bucket %s during sweep: %s", b.ID, err)
+						log.Printf("error destroying bucket %s during sweep: %s", b.ID, err)
 					}
 				}
 			}

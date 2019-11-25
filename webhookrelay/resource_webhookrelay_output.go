@@ -63,7 +63,7 @@ func resourceWebhookrelayOutputCreate(d *schema.ResourceData, meta interface{}) 
 		return fmt.Errorf("error reading bucket details: %w", err)
 	}
 
-	request := &models.OutputRequest{
+	request := &models.Output{
 		Name:        d.Get("name").(string),
 		Description: d.Get("description").(string),
 		Destination: d.Get("destination").(string),
@@ -122,7 +122,7 @@ func resourceWebhookrelayOutputUpdate(d *schema.ResourceData, meta interface{}) 
 	client := meta.(*client.Openapi)
 
 	if d.HasChange("description") || d.HasChange("destination") || d.HasChange("internal") {
-		request := &models.OutputRequest{
+		request := &models.Output{
 			Name:        d.Get("name").(string),
 			Description: d.Get("description").(string),
 			Destination: d.Get("destination").(string),

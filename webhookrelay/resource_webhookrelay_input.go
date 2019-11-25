@@ -15,7 +15,7 @@ func resourceWebhookrelayInput() *schema.Resource {
 	return &schema.Resource{
 		Create: resourceWebhookrelayInputCreate,
 		Read:   resourceWebhookrelayInputRead,
-		// Update: resourceWebhookrelayInputUpdate, // not yet implemented in sdk
+		// Update: resourceWebhookrelayInputUpdate, // TODO: enable updating inputs
 		Delete: resourceWebhookrelayInputDelete,
 		Importer: &schema.ResourceImporter{
 			State: schema.ImportStatePassthrough,
@@ -55,7 +55,7 @@ func resourceWebhookrelayInputCreate(d *schema.ResourceData, meta interface{}) e
 		return fmt.Errorf("error reading bucket details: %w", err)
 	}
 
-	request := &models.InputRequest{
+	request := &models.Input{
 		Name:        d.Get("name").(string),
 		Description: d.Get("description").(string),
 	}
@@ -106,9 +106,9 @@ func resourceWebhookrelayInputRead(d *schema.ResourceData, meta interface{}) err
 	return nil
 }
 
-func resourceWebhookrelayInputUpdate(d *schema.ResourceData, meta interface{}) error {
-	return nil
-}
+// func resourceWebhookrelayInputUpdate(d *schema.ResourceData, meta interface{}) error {
+// 	return nil
+// }
 
 func resourceWebhookrelayInputDelete(d *schema.ResourceData, meta interface{}) error {
 	client := meta.(*client.Openapi)

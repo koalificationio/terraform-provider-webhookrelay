@@ -113,7 +113,7 @@ func resourceWebhookrelayBucketUpdate(d *schema.ResourceData, meta interface{}) 
 	client := meta.(*client.Openapi)
 
 	if d.HasChange("name") || d.HasChange("description") {
-		request := &models.BucketRequest{
+		request := &models.Bucket{
 			Name:        d.Get("name").(string),
 			Description: d.Get("description").(string),
 		}
