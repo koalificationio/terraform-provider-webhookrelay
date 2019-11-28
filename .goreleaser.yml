@@ -1,0 +1,23 @@
+project_name: terraform-provider-webhookrelay
+
+builds:
+  - binary: terraform-provider-webhookrelay
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - darwin
+      - linux
+    goarch:
+      - amd64
+    ldflags: -extldflags '-static'
+
+archives:
+  - format: binary
+    name_template: "{{.ProjectName}}-{{.Os}}-{{.Arch}}"
+    files:
+      - nothing.*
+
+release:
+  github:
+    owner: koalificationio
+    name: terraform-provider-webhookrelay
