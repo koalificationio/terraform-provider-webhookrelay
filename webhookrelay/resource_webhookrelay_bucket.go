@@ -34,6 +34,14 @@ func resourceWebhookrelayBucket() *schema.Resource {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
+			"websocket_streaming": {
+				Type:     schema.TypeBool,
+				Optional: true,
+			},
+			"ephemeral_webhooks": {
+				Type:     schema.TypeBool,
+				Optional: true,
+			},
 			"default_input": {
 				Type:     schema.TypeList,
 				Computed: true,
@@ -88,6 +96,8 @@ func resourceWebhookrelayBucketRead(d *schema.ResourceData, meta interface{}) er
 
 	bucket := resp.GetPayload()
 	d.Set("description", bucket.Description)
+	d.Set("websocket_streaming", bucket.Stream)
+	d.Set("ephemeral_webhooks", bucket.Ephemeral)
 
 	var defaultInput, inputs []*models.Input
 	for _, i := range bucket.Inputs {
@@ -112,10 +122,12 @@ func resourceWebhookrelayBucketRead(d *schema.ResourceData, meta interface{}) er
 func resourceWebhookrelayBucketUpdate(d *schema.ResourceData, meta interface{}) error {
 	client := meta.(*client.Openapi)
 
-	if d.HasChange("name") || d.HasChange("description") {
+	if d.HasChanges("name", "description", "websocket_streaming", "ephemeral_webhooks") {
 		request := &models.Bucket{
 			Name:        d.Get("name").(string),
 			Description: d.Get("description").(string),
+			Stream:      d.Get("websocket_streaming").(bool),
+			Ephemeral:   d.Get("ephemeral_webhooks").(bool),
 		}
 
 		params := buckets.NewPutV1BucketsBucketIDParams().WithBucketID(d.Id()).WithBody(request)
