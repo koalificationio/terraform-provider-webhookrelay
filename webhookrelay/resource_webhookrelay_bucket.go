@@ -122,7 +122,7 @@ func resourceWebhookrelayBucketRead(d *schema.ResourceData, meta interface{}) er
 func resourceWebhookrelayBucketUpdate(d *schema.ResourceData, meta interface{}) error {
 	client := meta.(*client.Openapi)
 
-	if d.HasChange("name") || d.HasChange("description") || d.HasChange("websocket_streaming") || d.HasChange("ephemeral_webhooks") {
+	if d.HasChanges("name", "description", "websocket_streaming", "ephemeral_webhooks") {
 		request := &models.Bucket{
 			Name:        d.Get("name").(string),
 			Description: d.Get("description").(string),
