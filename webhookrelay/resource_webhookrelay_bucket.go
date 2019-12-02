@@ -96,6 +96,8 @@ func resourceWebhookrelayBucketRead(d *schema.ResourceData, meta interface{}) er
 
 	bucket := resp.GetPayload()
 	d.Set("description", bucket.Description)
+	d.Set("websocket_streaming", bucket.Stream)
+	d.Set("ephemeral_webhooks", bucket.Ephemeral)
 
 	var defaultInput, inputs []*models.Input
 	for _, i := range bucket.Inputs {

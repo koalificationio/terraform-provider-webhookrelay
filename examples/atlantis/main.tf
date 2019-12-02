@@ -2,6 +2,7 @@ resource "webhookrelay_bucket" "atlantis_prod" {
   name                 = "atlantis-prod"
   description          = "Prod atlantis webhook bucket"
   delete_default_input = true
+  ephemeral_webhooks   = true
 }
 
 resource "webhookrelay_input" "atlantis_prod" {
