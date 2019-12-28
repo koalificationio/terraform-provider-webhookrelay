@@ -66,3 +66,50 @@ func expandScopes(scopes []interface{}) *models.TokenScopes {
 
 	return result
 }
+
+func flattenBucketAuth(auth *models.BucketAuth) []map[string]interface{} {
+	result := make([]map[string]interface{}, 1)
+
+	config := make(map[string]interface{})
+
+	config["type"] = auth.Type
+
+	switch auth.Type {
+	case "none":
+		return nil
+	case "basic":
+		config["username"] = auth.Username
+		config["password"] = auth.Password
+	case "token":
+		config["token"] = auth.Token
+	}
+
+	result[0] = config
+
+	return result
+}
+
+func expandBucketAuth(config []interface{}) *models.BucketAuth {
+	result := &models.BucketAuth{
+		// set default type to disabled
+		Type: "none",
+	}
+
+	if len(config) == 0 || config[0] == nil {
+		return result
+	}
+
+	auth := config[0].(map[string]interface{})
+
+	result.Type = auth["type"].(string)
+
+	switch result.Type {
+	case "basic":
+		result.Username = auth["username"].(string)
+		result.Password = auth["password"].(string)
+	case "token":
+		result.Token = auth["token"].(string)
+	}
+
+	return result
+}

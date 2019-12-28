@@ -22,6 +22,7 @@ resource "webhookrelay_bucket" "foo" {
 
 * `name` - (Required) Name of a bucket to create.
 * `description` - (Optional) description of a bucket.
+* `auth` - (Optional) Enable authentication fo bucket. See [Auth](#auth) below for details.
 * `ephemeral_webhooks` - (Optional) when enabled - request body, headers and query are not recorded in the database.
 * `websocket_streaming` - (Optional) allows agents to subscribe via WebSocket protocol to this bucket.
 * `delete_default_input` - (Optional) delete default input that is added upon bucket creation. You can create new inputs using [`resource_webhookrelay_input`][1] resource.
@@ -33,6 +34,15 @@ resource "webhookrelay_bucket" "foo" {
 
 * `default_input` - configuration of default input. See [Inputs](#inputs) below for details.
 * `input` - configuration of other inputs available in bucket. See [Inputs](#inputs) below for details.
+
+### Auth
+
+The `auth` field allows following attributes:
+
+* `type` - (Optional) Type of authentication. Can be `basic` or `token`.
+* `username` - (Optional) required when `basic` type is used.
+* `password` - (Optional) required when `basic` type is used.
+* `token` - (Optional) required when `token` type is used.
 
 ### Inputs
 

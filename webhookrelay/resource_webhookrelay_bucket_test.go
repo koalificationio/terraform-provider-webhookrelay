@@ -72,6 +72,8 @@ func TestAccWebhookrelayBucket_Basic(t *testing.T) {
 						resName, "default_input.#", "1"),
 					resource.TestCheckResourceAttr(
 						resName, "input.#", "0"),
+					resource.TestCheckResourceAttr(
+						resName, "auth.#", "0"),
 				),
 			},
 			{
@@ -82,6 +84,10 @@ func TestAccWebhookrelayBucket_Basic(t *testing.T) {
 						resName, "name", bucket),
 					resource.TestCheckResourceAttr(
 						resName, "description", "bar"),
+					resource.TestCheckResourceAttr(
+						resName, "auth.0.type", "basic"),
+					resource.TestCheckResourceAttr(
+						resName, "websocket_streaming", "false"),
 				),
 			},
 			{
@@ -102,6 +108,10 @@ func TestAccWebhookrelayBucket_Basic(t *testing.T) {
 					testAccCheckWebhookrelayBucketExists(resName),
 					resource.TestCheckResourceAttr(
 						resName, "default_input.#", "0"),
+					resource.TestCheckResourceAttr(
+						resName, "auth.0.type", "token"),
+					resource.TestCheckResourceAttr(
+						resName, "auth.0.token", "123456"),
 				),
 			},
 			{
@@ -112,6 +122,8 @@ func TestAccWebhookrelayBucket_Basic(t *testing.T) {
 						resName, "default_input.#", "0"),
 					resource.TestCheckResourceAttr(
 						resName, "description", ""),
+					resource.TestCheckResourceAttr(
+						resName, "auth.#", "0"),
 				),
 			},
 		},
@@ -183,8 +195,14 @@ resource "webhookrelay_bucket" "foo" {
 func testAccCheckWebhookrelayBucketConfigUpdated(name string) string {
 	return fmt.Sprintf(`
 resource "webhookrelay_bucket" "foo" {
-  name        = "%s"
-  description = "bar"
+  name                = "%s"
+  description         = "bar"
+  websocket_streaming = false
+  auth {
+    type     = "basic"
+    username = "test"
+    password = "secret"
+  }
 }`, name)
 }
 
@@ -194,6 +212,10 @@ resource "webhookrelay_bucket" "foo" {
   name                 = "%s"
   description          = "bar"
   delete_default_input = true
+  auth {
+    type     = "token"
+    token    = "123456"
+  }
 }`, name)
 }
 
