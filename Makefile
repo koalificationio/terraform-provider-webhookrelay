@@ -41,8 +41,7 @@ depscheck:
 		(echo; echo "Unexpected difference in vendor/ directory. Run 'go mod vendor' command or revert any go.mod/go.sum/vendor changes and commit."; exit 1)
 
 docscheck:
-	@tfproviderdocs check \
-		-require-resource-subcategory
+	@tfproviderdocs check
 
 lint:
 	@echo "==> Checking source code against linters..."

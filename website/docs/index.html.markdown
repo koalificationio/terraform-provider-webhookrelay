@@ -1,7 +1,6 @@
 ---
 layout: "webhookrelay"
 page_title: "Provider: webhookrelay"
-sidebar_current: "docs-webhookrelay-index"
 description: |-
   Terraform webhookrelay provider.
 ---
