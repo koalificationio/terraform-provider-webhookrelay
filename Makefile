@@ -2,6 +2,7 @@ TEST?=./...
 SWEEP=any
 GOFMT_FILES?=$$(find . -name '*.go' |grep -v vendor)
 PKG_NAME=webhookrelay
+WEBSITE_REPO=github.com/hashicorp/terraform-website
 
 default: build
 
@@ -29,11 +30,27 @@ fmtcheck:
 websitefmtcheck:
 	@sh -c "'$(CURDIR)/scripts/websitefmtcheck.sh'"
 
+depscheck:
+	@echo "==> Checking source code with go mod tidy..."
+	@go mod tidy
+	@git diff --exit-code -- go.mod go.sum || \
+		(echo; echo "Unexpected difference in go.mod/go.sum files. Run 'go mod tidy' command or revert any go.mod/go.sum changes and commit."; exit 1)
+	@echo "==> Checking source code with go mod vendor..."
+	@go mod vendor
+	@git diff --compact-summary --exit-code -- vendor || \
+		(echo; echo "Unexpected difference in vendor/ directory. Run 'go mod vendor' command or revert any go.mod/go.sum/vendor changes and commit."; exit 1)
+
+docscheck:
+	@tfproviderdocs check \
+		-require-resource-subcategory
+
 lint:
 	@echo "==> Checking source code against linters..."
 	@GOGC=30 golangci-lint run -v ./$(PKG_NAME)
 	@tfproviderlint \
 		-c 1 \
+		-AT001 \
+		-AT002 \
 		-S001 \
 		-S002 \
 		-S003 \
@@ -54,6 +71,7 @@ lint:
 		./$(PKG_NAME)
 
 tools:
+	GO111MODULE=on go install github.com/bflad/tfproviderdocs
 	GO111MODULE=on go install github.com/bflad/tfproviderlint/cmd/tfproviderlint
 	GO111MODULE=on go install github.com/client9/misspell/cmd/misspell
 	GO111MODULE=on go install github.com/golangci/golangci-lint/cmd/golangci-lint
@@ -66,4 +84,22 @@ test-compile:
 	fi
 	go test -c $(TEST) $(TESTARGS)
 
-.PHONY: build test testacc fmt fmtcheck lint tools test-compile
+website:
+ifeq (,$(wildcard $(GOPATH)/src/$(WEBSITE_REPO)))
+	echo "$(WEBSITE_REPO) not found in your GOPATH (necessary for layouts and assets), get-ting..."
+	git clone https://$(WEBSITE_REPO) $(GOPATH)/src/$(WEBSITE_REPO)
+endif
+	@$(MAKE) -C $(GOPATH)/src/$(WEBSITE_REPO) website-provider PROVIDER_PATH=$(shell pwd) PROVIDER_NAME=$(PKG_NAME)
+
+website-lint:
+	@echo "==> Checking website against linters..."
+	@misspell -error -source=text website/
+
+website-test:
+ifeq (,$(wildcard $(GOPATH)/src/$(WEBSITE_REPO)))
+	echo "$(WEBSITE_REPO) not found in your GOPATH (necessary for layouts and assets), get-ting..."
+	git clone https://$(WEBSITE_REPO) $(GOPATH)/src/$(WEBSITE_REPO)
+endif
+	@$(MAKE) -C $(GOPATH)/src/$(WEBSITE_REPO) website-provider-test PROVIDER_PATH=$(shell pwd) PROVIDER_NAME=$(PKG_NAME)
+
+.PHONY: build sweep test testacc fmt fmtcheck lint tools test-compile website website-lint website-test depscheck docscheck
