@@ -28,17 +28,11 @@ resource "webhookrelay_input" "foo" {
 ## Argument Reference
 
 * `name` - (Required) Name of an input to create.
-
--> **NOTE:** Changing `name` will recreate input
-
 * `bucket_id` - (Required) ID of a bucket for an input.
 
 -> **NOTE:** Changing `bucket_id` will recreate input
 
 * `description` - (Optional) Input description.
-
--> **NOTE:** Changing `description` will recreate input
-
 
 ## Attributes Reference
 

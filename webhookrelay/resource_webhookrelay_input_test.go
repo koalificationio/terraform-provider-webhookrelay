@@ -51,7 +51,6 @@ func TestAccWebhookrelayInput_Basic(t *testing.T) {
 				Config: testAccCheckWebhookrelayInputConfig(inputNewName, bucketName),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckWebhookrelayInputExists(resName, &newInput, &bucket),
-					testAccCheckWebhookrelayInputOldDestroy(&input, &bucket),
 					resource.TestCheckResourceAttr(
 						resName, "name", inputNewName),
 					resource.TestCheckResourceAttr(
@@ -85,28 +84,6 @@ func testAccCheckWebhookrelayInputDestroy(s *terraform.State) error {
 		}
 	}
 	return nil
-}
-
-func testAccCheckWebhookrelayInputOldDestroy(input *models.Input, bucket *models.Bucket) resource.TestCheckFunc {
-	return func(s *terraform.State) error {
-		client := testAccProvider.Meta().(*client.Openapi)
-
-		params := buckets.NewGetV1BucketsBucketIDParams().WithBucketID(bucket.ID)
-
-		resp, err := client.Buckets.GetV1BucketsBucketID(params)
-		if err != nil {
-			if _, ok := err.(*buckets.GetV1BucketsBucketIDNotFound); ok {
-				return nil
-			}
-			return fmt.Errorf("failed getting buckets: %w", err)
-		}
-		for _, i := range resp.GetPayload().Inputs {
-			if input.ID == i.ID {
-				return fmt.Errorf("input %s still exists", input.ID)
-			}
-		}
-		return nil
-	}
 }
 
 func testAccCheckWebhookrelayInputExists(n string, input *models.Input, bucket *models.Bucket) resource.TestCheckFunc {

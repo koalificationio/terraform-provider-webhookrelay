@@ -15,7 +15,7 @@ func resourceWebhookrelayInput() *schema.Resource {
 	return &schema.Resource{
 		Create: resourceWebhookrelayInputCreate,
 		Read:   resourceWebhookrelayInputRead,
-		// Update: resourceWebhookrelayInputUpdate, // TODO: enable updating inputs
+		Update: resourceWebhookrelayInputUpdate,
 		Delete: resourceWebhookrelayInputDelete,
 		Importer: &schema.ResourceImporter{
 			State: schema.ImportStatePassthrough,
@@ -25,12 +25,10 @@ func resourceWebhookrelayInput() *schema.Resource {
 			"name": {
 				Type:     schema.TypeString,
 				Required: true,
-				ForceNew: true,
 			},
 			"description": {
 				Type:     schema.TypeString,
 				Optional: true,
-				ForceNew: true,
 			},
 			"bucket_id": {
 				Type:     schema.TypeString,
@@ -106,9 +104,30 @@ func resourceWebhookrelayInputRead(d *schema.ResourceData, meta interface{}) err
 	return nil
 }
 
-// func resourceWebhookrelayInputUpdate(d *schema.ResourceData, meta interface{}) error {
-// 	return nil
-// }
+func resourceWebhookrelayInputUpdate(d *schema.ResourceData, meta interface{}) error {
+	client := meta.(*client.Openapi)
+
+	bucketID := d.Get("bucket_id").(string)
+
+	if d.HasChanges("name", "description") {
+		request := &models.Input{
+			Name:        d.Get("name").(string),
+			Description: d.Get("description").(string),
+		}
+
+		params := inputs.NewPutV1BucketsBucketIDInputsInputIDParams().
+			WithBucketID(bucketID).
+			WithInputID(d.Id()).
+			WithBody(request)
+
+		_, err := client.Inputs.PutV1BucketsBucketIDInputsInputID(params)
+		if err != nil {
+			return fmt.Errorf("error updating input: %w", err)
+		}
+	}
+
+	return nil
+}
 
 func resourceWebhookrelayInputDelete(d *schema.ResourceData, meta interface{}) error {
 	client := meta.(*client.Openapi)

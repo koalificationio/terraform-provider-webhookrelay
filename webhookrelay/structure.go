@@ -18,23 +18,6 @@ func flattenInputs(inputs []*models.Input) []map[string]interface{} {
 	return result
 }
 
-// TODO: enable updating inputs
-// func expandInputs(inputs []map[string]interface{}) []*models.Input {
-// 	result := make([]*models.Input, 0, len(inputs))
-
-// 	for _, i := range inputs {
-// 		input := &models.Input{
-// 			Name:        i["id"].(string),
-// 			Description: i["description"].(string),
-// 			ID:          i["name"].(string),
-// 		}
-
-// 		result = append(result, input)
-// 	}
-
-// 	return result
-// }
-
 func flattenScopes(scopes *models.TokenScopes) []map[string]interface{} {
 	result := make([]map[string]interface{}, 1)
 
