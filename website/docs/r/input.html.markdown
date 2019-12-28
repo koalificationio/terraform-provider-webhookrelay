@@ -34,6 +34,7 @@ resource "webhookrelay_input" "foo" {
 
 * `description` - (Optional) Input description.
 * `status_code` - (Optional) Specify what should Webhook Relay return to HTTP clients that call this endpoint.
+* `response_body` - (Optional) Response body can be any text, JSON or XML payload.
 
 ## Attributes Reference
 

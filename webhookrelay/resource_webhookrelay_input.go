@@ -40,6 +40,10 @@ func resourceWebhookrelayInput() *schema.Resource {
 				Optional: true,
 				Computed: true,
 			},
+			"response_body": {
+				Type:     schema.TypeString,
+				Optional: true,
+			},
 		},
 	}
 }
@@ -65,6 +69,9 @@ func resourceWebhookrelayInputCreate(d *schema.ResourceData, meta interface{}) e
 
 	if v, ok := d.GetOk("status_code"); ok {
 		request.StatusCode = v.(int64)
+	}
+	if v, ok := d.GetOk("response_body"); ok {
+		request.Body = v.(string)
 	}
 
 	params := inputs.NewPostV1BucketsBucketIDInputsParams().
@@ -110,6 +117,7 @@ func resourceWebhookrelayInputRead(d *schema.ResourceData, meta interface{}) err
 
 	d.Set("description", input.Description)
 	d.Set("status_code", int(input.StatusCode))
+	d.Set("response_body", input.Body)
 
 	return nil
 }
@@ -119,7 +127,7 @@ func resourceWebhookrelayInputUpdate(d *schema.ResourceData, meta interface{}) e
 
 	bucketID := d.Get("bucket_id").(string)
 
-	if d.HasChanges("name", "description") {
+	if d.HasChanges("name", "description", "status_code", "response_body") {
 		request := &models.Input{
 			Name:        d.Get("name").(string),
 			Description: d.Get("description").(string),
@@ -127,6 +135,9 @@ func resourceWebhookrelayInputUpdate(d *schema.ResourceData, meta interface{}) e
 
 		if v, ok := d.GetOk("status_code"); ok {
 			request.StatusCode = int64(v.(int))
+		}
+		if v, ok := d.GetOk("response_body"); ok {
+			request.Body = v.(string)
 		}
 
 		params := inputs.NewPutV1BucketsBucketIDInputsInputIDParams().
