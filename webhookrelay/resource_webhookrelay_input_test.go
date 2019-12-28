@@ -45,6 +45,8 @@ func TestAccWebhookrelayInput_Basic(t *testing.T) {
 						resName, "name", inputName),
 					resource.TestCheckResourceAttr(
 						resName, "description", "bar"),
+					resource.TestCheckResourceAttr(
+						resName, "status_code", "402"),
 				),
 			},
 			{
@@ -150,5 +152,6 @@ resource "webhookrelay_input" "foo" {
   name        = "%s"
   description = "bar"
   bucket_id   = webhookrelay_bucket.foo.id
+  status_code = 402
 }`, bucket, name)
 }

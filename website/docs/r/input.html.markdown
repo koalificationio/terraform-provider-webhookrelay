@@ -33,6 +33,7 @@ resource "webhookrelay_input" "foo" {
 -> **NOTE:** Changing `bucket_id` will recreate input
 
 * `description` - (Optional) Input description.
+* `status_code` - (Optional) Specify what should Webhook Relay return to HTTP clients that call this endpoint.
 
 ## Attributes Reference
 

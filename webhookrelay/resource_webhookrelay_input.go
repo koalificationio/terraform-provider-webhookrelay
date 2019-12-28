@@ -35,6 +35,11 @@ func resourceWebhookrelayInput() *schema.Resource {
 				Required: true,
 				ForceNew: true,
 			},
+			"status_code": {
+				Type:     schema.TypeInt,
+				Optional: true,
+				Computed: true,
+			},
 		},
 	}
 }
@@ -56,6 +61,10 @@ func resourceWebhookrelayInputCreate(d *schema.ResourceData, meta interface{}) e
 	request := &models.Input{
 		Name:        d.Get("name").(string),
 		Description: d.Get("description").(string),
+	}
+
+	if v, ok := d.GetOk("status_code"); ok {
+		request.StatusCode = v.(int64)
 	}
 
 	params := inputs.NewPostV1BucketsBucketIDInputsParams().
@@ -100,6 +109,7 @@ func resourceWebhookrelayInputRead(d *schema.ResourceData, meta interface{}) err
 	}
 
 	d.Set("description", input.Description)
+	d.Set("status_code", int(input.StatusCode))
 
 	return nil
 }
@@ -113,6 +123,10 @@ func resourceWebhookrelayInputUpdate(d *schema.ResourceData, meta interface{}) e
 		request := &models.Input{
 			Name:        d.Get("name").(string),
 			Description: d.Get("description").(string),
+		}
+
+		if v, ok := d.GetOk("status_code"); ok {
+			request.StatusCode = int64(v.(int))
 		}
 
 		params := inputs.NewPutV1BucketsBucketIDInputsInputIDParams().
