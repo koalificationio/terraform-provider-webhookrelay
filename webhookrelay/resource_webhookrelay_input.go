@@ -44,6 +44,13 @@ func resourceWebhookrelayInput() *schema.Resource {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
+			"headers": {
+				Type:     schema.TypeMap,
+				Optional: true,
+				Elem: &schema.Schema{
+					Type: schema.TypeString,
+				},
+			},
 		},
 	}
 }
@@ -72,6 +79,9 @@ func resourceWebhookrelayInputCreate(d *schema.ResourceData, meta interface{}) e
 	}
 	if v, ok := d.GetOk("response_body"); ok {
 		request.Body = v.(string)
+	}
+	if v, ok := d.GetOk("headers"); ok {
+		request.Headers = expandHeaders(v.(map[string]interface{}))
 	}
 
 	params := inputs.NewPostV1BucketsBucketIDInputsParams().
@@ -118,6 +128,11 @@ func resourceWebhookrelayInputRead(d *schema.ResourceData, meta interface{}) err
 	d.Set("description", input.Description)
 	d.Set("status_code", int(input.StatusCode))
 	d.Set("response_body", input.Body)
+	if input.Headers != nil {
+		if err := d.Set("headers", flattenHeaders(input.Headers)); err != nil {
+			return fmt.Errorf("error setting headers %w", err)
+		}
+	}
 
 	return nil
 }
@@ -138,6 +153,9 @@ func resourceWebhookrelayInputUpdate(d *schema.ResourceData, meta interface{}) e
 		}
 		if v, ok := d.GetOk("response_body"); ok {
 			request.Body = v.(string)
+		}
+		if v, ok := d.GetOk("headers"); ok {
+			request.Headers = expandHeaders(v.(map[string]interface{}))
 		}
 
 		params := inputs.NewPutV1BucketsBucketIDInputsInputIDParams().

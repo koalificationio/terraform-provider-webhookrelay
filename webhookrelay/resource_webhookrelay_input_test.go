@@ -37,6 +37,10 @@ func TestAccWebhookrelayInput_Basic(t *testing.T) {
 						resName, "description", "foo"),
 					resource.TestCheckResourceAttr(
 						resName, "response_body", "{\"message\":\"test\"}"),
+					resource.TestCheckResourceAttr(
+						resName, "headers.%", "2"),
+					resource.TestCheckResourceAttr(
+						resName, "headers.Content-Type", "text/html; charset=utf-8"),
 				),
 			},
 			{
@@ -51,6 +55,8 @@ func TestAccWebhookrelayInput_Basic(t *testing.T) {
 						resName, "status_code", "402"),
 					resource.TestCheckResourceAttr(
 						resName, "response_body", ""),
+					resource.TestCheckResourceAttr(
+						resName, "headers.%", "0"),
 				),
 			},
 			{
@@ -144,6 +150,10 @@ resource "webhookrelay_input" "foo" {
   response_body = jsonencode(
     map("message", "test")
   )
+  headers = {
+    Content-Type  = "text/html; charset=utf-8"
+    Foo           = "Bar"
+  }
 }`, bucket, name)
 }
 

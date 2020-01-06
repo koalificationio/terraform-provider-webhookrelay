@@ -1,6 +1,8 @@
 package webhookrelay
 
 import (
+	"strings"
+
 	"github.com/koalificationio/go-webhookrelay/pkg/openapi/models"
 )
 
@@ -95,4 +97,31 @@ func expandBucketAuth(config []interface{}) *models.BucketAuth {
 	}
 
 	return result
+}
+
+func flattenHeaders(headers models.Headers) map[string]interface{} {
+	config := make(map[string]interface{})
+
+	m := interface{}(headers).(map[string]interface{})
+
+	for h, v := range m {
+		a := v.([]interface{})
+		b := make([]string, len(a))
+		for i := range v.([]interface{}) {
+			b[i] = a[i].(string)
+		}
+		config[h] = strings.Join(b, ";")
+	}
+
+	return config
+}
+
+func expandHeaders(config map[string]interface{}) models.Headers {
+	headers := make(map[string][]string)
+
+	for h, v := range config {
+		headers[h] = []string{v.(string)}
+	}
+
+	return interface{}(headers).(models.Headers)
 }
