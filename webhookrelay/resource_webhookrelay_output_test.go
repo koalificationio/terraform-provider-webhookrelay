@@ -48,6 +48,8 @@ func TestAccWebhookrelayOutput_Basic(t *testing.T) {
 						resName, "destination", "https://example.com:8080"),
 					resource.TestCheckResourceAttr(
 						resName, "internal", "false"),
+					resource.TestCheckResourceAttr(
+						resName, "tls_verification", "true"),
 				),
 			},
 			{
@@ -148,10 +150,11 @@ resource "webhookrelay_bucket" "foo" {
 }
 
 resource "webhookrelay_output" "foo" {
-  name        = "%s"
-  description = "bar"
-  destination = "https://example.com:8080"
-  internal    = false
-  bucket_id   = webhookrelay_bucket.foo.id
+  name             = "%s"
+  description      = "bar"
+  destination      = "https://example.com:8080"
+  internal         = false
+  tls_verification = true
+  bucket_id        = webhookrelay_bucket.foo.id
 }`, bucket, name)
 }

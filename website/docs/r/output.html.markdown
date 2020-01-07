@@ -36,6 +36,7 @@ resource "webhookrelay_output" "foo" {
 * `description` - (Optional) description of an output.
 * `destination` - (Required) output destination.
 * `internal` - (Optional) set to `true` if output is on local network. Defaults to `false`.
+* `tls_verification` - (Optional) TLS verification for public endpoints.
 
 ## Attributes Reference
 

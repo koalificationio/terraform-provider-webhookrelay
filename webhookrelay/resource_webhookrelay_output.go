@@ -40,6 +40,10 @@ func resourceWebhookrelayOutput() *schema.Resource {
 				Type:     schema.TypeBool,
 				Optional: true,
 			},
+			"tls_verification": {
+				Type:     schema.TypeBool,
+				Optional: true,
+			},
 			"bucket_id": {
 				Type:     schema.TypeString,
 				Required: true,
@@ -64,10 +68,11 @@ func resourceWebhookrelayOutputCreate(d *schema.ResourceData, meta interface{}) 
 	}
 
 	request := &models.Output{
-		Name:        d.Get("name").(string),
-		Description: d.Get("description").(string),
-		Destination: d.Get("destination").(string),
-		Internal:    d.Get("internal").(bool),
+		Name:            d.Get("name").(string),
+		Description:     d.Get("description").(string),
+		Destination:     d.Get("destination").(string),
+		Internal:        d.Get("internal").(bool),
+		TLSVerification: d.Get("tls_verification").(bool),
 	}
 
 	params := outputs.NewPostV1BucketsBucketIDOutputsParams().
@@ -114,6 +119,7 @@ func resourceWebhookrelayOutputRead(d *schema.ResourceData, meta interface{}) er
 	d.Set("description", output.Description)
 	d.Set("destination", output.Destination)
 	d.Set("internal", output.Internal)
+	d.Set("tls_verification", output.TLSVerification)
 
 	return nil
 }
@@ -121,12 +127,13 @@ func resourceWebhookrelayOutputRead(d *schema.ResourceData, meta interface{}) er
 func resourceWebhookrelayOutputUpdate(d *schema.ResourceData, meta interface{}) error {
 	client := meta.(*client.Openapi)
 
-	if d.HasChanges("description", "destination", "internal") {
+	if d.HasChanges("description", "destination", "internal", "tls_verification") {
 		request := &models.Output{
-			Name:        d.Get("name").(string),
-			Description: d.Get("description").(string),
-			Destination: d.Get("destination").(string),
-			Internal:    d.Get("internal").(bool),
+			Name:            d.Get("name").(string),
+			Description:     d.Get("description").(string),
+			Destination:     d.Get("destination").(string),
+			Internal:        d.Get("internal").(bool),
+			TLSVerification: d.Get("tls_verification").(bool),
 		}
 
 		params := outputs.NewPutV1BucketsBucketIDOutputsOutputIDParams()
