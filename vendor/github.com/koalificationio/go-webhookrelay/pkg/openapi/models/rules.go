@@ -20,7 +20,7 @@ type Rules struct {
 	And AndRule `json:"and,omitempty"`
 
 	// match
-	Match MatchRule `json:"match,omitempty"`
+	Match *MatchRule `json:"match,omitempty"`
 
 	// not
 	Not NotRule `json:"not,omitempty"`
@@ -77,11 +77,13 @@ func (m *Rules) validateMatch(formats strfmt.Registry) error {
 		return nil
 	}
 
-	if err := m.Match.Validate(formats); err != nil {
-		if ve, ok := err.(*errors.Validation); ok {
-			return ve.ValidateName("match")
+	if m.Match != nil {
+		if err := m.Match.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("match")
+			}
+			return err
 		}
-		return err
 	}
 
 	return nil
