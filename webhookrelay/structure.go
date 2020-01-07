@@ -1,8 +1,10 @@
 package webhookrelay
 
 import (
+	"fmt"
 	"strings"
 
+	"github.com/hashicorp/terraform-plugin-sdk/helper/structure"
 	"github.com/koalificationio/go-webhookrelay/pkg/openapi/models"
 )
 
@@ -124,4 +126,33 @@ func expandHeaders(config map[string]interface{}) models.Headers {
 	}
 
 	return interface{}(headers).(models.Headers)
+}
+
+func flattenOutputRules(rules *models.Rules) (string, error) {
+	b, err := rules.MarshalBinary()
+	if err != nil {
+		return "", fmt.Errorf("Error parsing rules: %v", err)
+	}
+
+	config, err := structure.NormalizeJsonString(string(b))
+	if err != nil {
+		return "", fmt.Errorf("Rules contain an invalid JSON: %v", err)
+	}
+
+	return config, nil
+}
+
+func expandOutputRules(config string) (*models.Rules, error) {
+	rules := models.Rules{}
+
+	if config == "" {
+		return nil, nil
+	}
+
+	err := rules.UnmarshalBinary([]byte(config))
+	if err != nil {
+		return nil, fmt.Errorf("Error parsing rules config: %v", err)
+	}
+
+	return &rules, nil
 }

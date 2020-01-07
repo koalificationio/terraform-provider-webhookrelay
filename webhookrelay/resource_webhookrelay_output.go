@@ -4,7 +4,10 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/go-openapi/strfmt"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/helper/structure"
+	"github.com/hashicorp/terraform-plugin-sdk/helper/validation"
 	"github.com/koalificationio/go-webhookrelay/pkg/openapi/client"
 	"github.com/koalificationio/go-webhookrelay/pkg/openapi/client/buckets"
 	"github.com/koalificationio/go-webhookrelay/pkg/openapi/client/outputs"
@@ -49,6 +52,19 @@ func resourceWebhookrelayOutput() *schema.Resource {
 				Required: true,
 				ForceNew: true,
 			},
+			"rules": {
+				Type:     schema.TypeString,
+				Optional: true,
+				ValidateFunc: validation.All(
+					validation.ValidateJsonString,
+					validateOutputRules,
+				),
+				StateFunc: func(v interface{}) string {
+					json, _ := structure.NormalizeJsonString(v.(string))
+					return json
+				},
+				DiffSuppressFunc: structure.SuppressJsonDiff,
+			},
 		},
 	}
 }
@@ -73,6 +89,12 @@ func resourceWebhookrelayOutputCreate(d *schema.ResourceData, meta interface{}) 
 		Destination:     d.Get("destination").(string),
 		Internal:        d.Get("internal").(bool),
 		TLSVerification: d.Get("tls_verification").(bool),
+	}
+
+	if v, err := expandOutputRules(d.Get("rules").(string)); err != nil {
+		return err
+	} else if v != nil {
+		request.Rules = v
 	}
 
 	params := outputs.NewPostV1BucketsBucketIDOutputsParams().
@@ -121,6 +143,12 @@ func resourceWebhookrelayOutputRead(d *schema.ResourceData, meta interface{}) er
 	d.Set("internal", output.Internal)
 	d.Set("tls_verification", output.TLSVerification)
 
+	if v, err := flattenOutputRules(output.Rules); err != nil {
+		return err
+	} else {
+		d.Set("rules", v)
+	}
+
 	return nil
 }
 
@@ -134,6 +162,12 @@ func resourceWebhookrelayOutputUpdate(d *schema.ResourceData, meta interface{}) 
 			Destination:     d.Get("destination").(string),
 			Internal:        d.Get("internal").(bool),
 			TLSVerification: d.Get("tls_verification").(bool),
+		}
+
+		if v, err := expandOutputRules(d.Get("rules").(string)); err != nil {
+			return err
+		} else {
+			request.Rules = v
 		}
 
 		params := outputs.NewPutV1BucketsBucketIDOutputsOutputIDParams()
@@ -162,4 +196,18 @@ func resourceWebhookrelayOutputDelete(d *schema.ResourceData, meta interface{}) 
 	}
 
 	return nil
+}
+
+func validateOutputRules(v interface{}, k string) (ws []string, errors []error) {
+	check, err := expandOutputRules(v.(string))
+	if err != nil {
+		errors = append(errors, fmt.Errorf("%q: error parsing config: %v", k, err))
+	}
+
+	err = check.Validate(strfmt.Default)
+	if err != nil {
+		errors = append(errors, fmt.Errorf("%q: error validating config: %v", k, err))
+	}
+
+	return
 }
