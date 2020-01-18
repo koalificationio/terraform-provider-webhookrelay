@@ -48,25 +48,6 @@ lint:
 	@GOGC=30 golangci-lint run -v ./$(PKG_NAME)
 	@tfproviderlint \
 		-c 1 \
-		-AT001 \
-		-AT002 \
-		-S001 \
-		-S002 \
-		-S003 \
-		-S004 \
-		-S005 \
-		-S007 \
-		-S008 \
-		-S009 \
-		-S010 \
-		-S011 \
-		-S012 \
-		-S013 \
-		-S014 \
-		-S015 \
-		-S016 \
-		-S017 \
-		-S019 \
 		./$(PKG_NAME)
 
 tools:
