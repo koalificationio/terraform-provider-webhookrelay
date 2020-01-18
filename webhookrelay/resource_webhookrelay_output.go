@@ -121,7 +121,7 @@ func resourceWebhookrelayOutputRead(d *schema.ResourceData, meta interface{}) er
 func resourceWebhookrelayOutputUpdate(d *schema.ResourceData, meta interface{}) error {
 	client := meta.(*client.Openapi)
 
-	if d.HasChange("description") || d.HasChange("destination") || d.HasChange("internal") {
+	if d.HasChanges("description", "destination", "internal") {
 		request := &models.Output{
 			Name:        d.Get("name").(string),
 			Description: d.Get("description").(string),

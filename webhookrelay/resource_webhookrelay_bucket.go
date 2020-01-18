@@ -20,7 +20,6 @@ func resourceWebhookrelayBucket() *schema.Resource {
 		Read:   resourceWebhookrelayBucketRead,
 		Update: resourceWebhookrelayBucketUpdate,
 		Delete: resourceWebhookrelayBucketDelete,
-		Exists: resourceWebhookrelayBucketExists,
 		Importer: &schema.ResourceImporter{
 			State: schema.ImportStatePassthrough,
 		},
@@ -179,21 +178,4 @@ func resourceWebhookrelayBucketDelete(d *schema.ResourceData, meta interface{}) 
 	}
 
 	return nil
-}
-
-func resourceWebhookrelayBucketExists(d *schema.ResourceData, meta interface{}) (bool, error) {
-	client := meta.(*client.Openapi)
-
-	params := buckets.NewGetV1BucketsBucketIDParams().WithBucketID(d.Id())
-	_, err := client.Buckets.GetV1BucketsBucketID(params)
-	if err != nil {
-		if _, ok := err.(*buckets.GetV1BucketsBucketIDNotFound); ok {
-			log.Printf("[WARN] Removing bucket %s because it's gone", d.Id())
-			d.SetId("")
-			return false, nil
-		}
-		return false, fmt.Errorf("Error getting bucket: %w", err)
-	}
-
-	return true, nil
 }

@@ -130,7 +130,7 @@ func resourceWebhookrelayTokenRead(d *schema.ResourceData, meta interface{}) err
 func resourceWebhookrelayTokenUpdate(d *schema.ResourceData, meta interface{}) error {
 	client := meta.(*client.Openapi)
 
-	if d.HasChange("description") || d.HasChange("api_access") || d.HasChange("scopes") {
+	if d.HasChanges("description", "api_access", "scopes") {
 		request := &models.Token{
 			Description: d.Get("description").(string),
 			APIAccess:   d.Get("api_access").(string),
