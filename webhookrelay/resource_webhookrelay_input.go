@@ -15,7 +15,7 @@ func resourceWebhookrelayInput() *schema.Resource {
 	return &schema.Resource{
 		Create: resourceWebhookrelayInputCreate,
 		Read:   resourceWebhookrelayInputRead,
-		// Update: resourceWebhookrelayInputUpdate, // TODO: enable updating inputs
+		Update: resourceWebhookrelayInputUpdate,
 		Delete: resourceWebhookrelayInputDelete,
 		Importer: &schema.ResourceImporter{
 			State: schema.ImportStatePassthrough,
@@ -25,17 +25,31 @@ func resourceWebhookrelayInput() *schema.Resource {
 			"name": {
 				Type:     schema.TypeString,
 				Required: true,
-				ForceNew: true,
 			},
 			"description": {
 				Type:     schema.TypeString,
 				Optional: true,
-				ForceNew: true,
 			},
 			"bucket_id": {
 				Type:     schema.TypeString,
 				Required: true,
 				ForceNew: true,
+			},
+			"status_code": {
+				Type:     schema.TypeInt,
+				Optional: true,
+				Computed: true,
+			},
+			"response_body": {
+				Type:     schema.TypeString,
+				Optional: true,
+			},
+			"headers": {
+				Type:     schema.TypeMap,
+				Optional: true,
+				Elem: &schema.Schema{
+					Type: schema.TypeString,
+				},
 			},
 		},
 	}
@@ -58,6 +72,16 @@ func resourceWebhookrelayInputCreate(d *schema.ResourceData, meta interface{}) e
 	request := &models.Input{
 		Name:        d.Get("name").(string),
 		Description: d.Get("description").(string),
+	}
+
+	if v, ok := d.GetOk("status_code"); ok {
+		request.StatusCode = v.(int64)
+	}
+	if v, ok := d.GetOk("response_body"); ok {
+		request.Body = v.(string)
+	}
+	if v, ok := d.GetOk("headers"); ok {
+		request.Headers = expandHeaders(v.(map[string]interface{}))
 	}
 
 	params := inputs.NewPostV1BucketsBucketIDInputsParams().
@@ -102,13 +126,51 @@ func resourceWebhookrelayInputRead(d *schema.ResourceData, meta interface{}) err
 	}
 
 	d.Set("description", input.Description)
+	d.Set("status_code", int(input.StatusCode))
+	d.Set("response_body", input.Body)
+	if input.Headers != nil {
+		if err := d.Set("headers", flattenHeaders(input.Headers)); err != nil {
+			return fmt.Errorf("error setting headers %w", err)
+		}
+	}
 
 	return nil
 }
 
-// func resourceWebhookrelayInputUpdate(d *schema.ResourceData, meta interface{}) error {
-// 	return nil
-// }
+func resourceWebhookrelayInputUpdate(d *schema.ResourceData, meta interface{}) error {
+	client := meta.(*client.Openapi)
+
+	bucketID := d.Get("bucket_id").(string)
+
+	if d.HasChanges("name", "description", "status_code", "response_body") {
+		request := &models.Input{
+			Name:        d.Get("name").(string),
+			Description: d.Get("description").(string),
+		}
+
+		if v, ok := d.GetOk("status_code"); ok {
+			request.StatusCode = int64(v.(int))
+		}
+		if v, ok := d.GetOk("response_body"); ok {
+			request.Body = v.(string)
+		}
+		if v, ok := d.GetOk("headers"); ok {
+			request.Headers = expandHeaders(v.(map[string]interface{}))
+		}
+
+		params := inputs.NewPutV1BucketsBucketIDInputsInputIDParams().
+			WithBucketID(bucketID).
+			WithInputID(d.Id()).
+			WithBody(request)
+
+		_, err := client.Inputs.PutV1BucketsBucketIDInputsInputID(params)
+		if err != nil {
+			return fmt.Errorf("error updating input: %w", err)
+		}
+	}
+
+	return nil
+}
 
 func resourceWebhookrelayInputDelete(d *schema.ResourceData, meta interface{}) error {
 	client := meta.(*client.Openapi)

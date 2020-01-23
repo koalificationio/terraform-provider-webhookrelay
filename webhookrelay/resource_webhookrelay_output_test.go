@@ -36,6 +36,8 @@ func TestAccWebhookrelayOutput_Basic(t *testing.T) {
 						resName, "destination", "http://localhost:8080"),
 					resource.TestCheckResourceAttr(
 						resName, "internal", "true"),
+					resource.TestCheckResourceAttrSet(
+						resName, "rules"),
 				),
 			},
 			{
@@ -48,6 +50,10 @@ func TestAccWebhookrelayOutput_Basic(t *testing.T) {
 						resName, "destination", "https://example.com:8080"),
 					resource.TestCheckResourceAttr(
 						resName, "internal", "false"),
+					resource.TestCheckResourceAttr(
+						resName, "tls_verification", "true"),
+					resource.TestCheckNoResourceAttr(
+						resName, "rules"),
 				),
 			},
 			{
@@ -137,6 +143,21 @@ resource "webhookrelay_output" "foo" {
   destination = "http://localhost:8080"
   internal    = true
   bucket_id   = webhookrelay_bucket.foo.id
+
+  rules = jsonencode({
+    and = [
+      {
+        match = {
+          type = "payload-hash-sha1"
+          parameter = {
+            source = "header"
+            name   = "X-Hub-Signature"
+          }
+          secret = "very-secret"
+        }
+      },
+    ]
+  })
 }`, bucket, name)
 }
 
@@ -148,10 +169,11 @@ resource "webhookrelay_bucket" "foo" {
 }
 
 resource "webhookrelay_output" "foo" {
-  name        = "%s"
-  description = "bar"
-  destination = "https://example.com:8080"
-  internal    = false
-  bucket_id   = webhookrelay_bucket.foo.id
+  name             = "%s"
+  description      = "bar"
+  destination      = "https://example.com:8080"
+  internal         = false
+  tls_verification = true
+  bucket_id        = webhookrelay_bucket.foo.id
 }`, bucket, name)
 }

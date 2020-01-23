@@ -25,20 +25,31 @@ resource "webhookrelay_input" "foo" {
 }
 ```
 
+With headers:
+
+```hcl
+resource "webhookrelay_input" "foo" {
+  name        = "foo"
+  description = "bar"
+  bucket_id   = webhookrelay_bucket.foo.id
+  headers = {
+    Content-Type = "text/plain; charset=utf-8"
+    Foo          = "bar"
+  }
+}
+```
+
 ## Argument Reference
 
 * `name` - (Required) Name of an input to create.
-
--> **NOTE:** Changing `name` will recreate input
-
 * `bucket_id` - (Required) ID of a bucket for an input.
 
 -> **NOTE:** Changing `bucket_id` will recreate input
 
 * `description` - (Optional) Input description.
-
--> **NOTE:** Changing `description` will recreate input
-
+* `status_code` - (Optional) Specify what should Webhook Relay return to HTTP clients that call this endpoint.
+* `response_body` - (Optional) Response body can be any text, JSON or XML payload.
+* `headers` - (Optional) A map of headers and their values to be sent as a response to webhook.
 
 ## Attributes Reference
 

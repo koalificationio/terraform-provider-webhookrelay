@@ -6,40 +6,144 @@ package models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	"strconv"
+	"encoding/json"
 
 	strfmt "github.com/go-openapi/strfmt"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/swag"
+	"github.com/go-openapi/validate"
 )
 
 // MatchRule Match Rule
 // swagger:model MatchRule
-type MatchRule []*Rules
+type MatchRule struct {
+
+	// parameter
+	Parameter *RuleParameter `json:"parameter,omitempty"`
+
+	// regex
+	Regex string `json:"regex,omitempty"`
+
+	// secret
+	Secret string `json:"secret,omitempty"`
+
+	// substring
+	Substring string `json:"substring,omitempty"`
+
+	// type
+	// Enum: [value contains does-not-contain regex payload-hash-sha1 payload-hash-sha256]
+	Type string `json:"type,omitempty"`
+
+	// value
+	Value string `json:"value,omitempty"`
+}
 
 // Validate validates this match rule
-func (m MatchRule) Validate(formats strfmt.Registry) error {
+func (m *MatchRule) Validate(formats strfmt.Registry) error {
 	var res []error
 
-	for i := 0; i < len(m); i++ {
-		if swag.IsZero(m[i]) { // not required
-			continue
-		}
+	if err := m.validateParameter(formats); err != nil {
+		res = append(res, err)
+	}
 
-		if m[i] != nil {
-			if err := m[i].Validate(formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
-					return ve.ValidateName(strconv.Itoa(i))
-				}
-				return err
-			}
-		}
-
+	if err := m.validateType(formats); err != nil {
+		res = append(res, err)
 	}
 
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
+	return nil
+}
+
+func (m *MatchRule) validateParameter(formats strfmt.Registry) error {
+
+	if swag.IsZero(m.Parameter) { // not required
+		return nil
+	}
+
+	if m.Parameter != nil {
+		if err := m.Parameter.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("parameter")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+var matchRuleTypeTypePropEnum []interface{}
+
+func init() {
+	var res []string
+	if err := json.Unmarshal([]byte(`["value","contains","does-not-contain","regex","payload-hash-sha1","payload-hash-sha256"]`), &res); err != nil {
+		panic(err)
+	}
+	for _, v := range res {
+		matchRuleTypeTypePropEnum = append(matchRuleTypeTypePropEnum, v)
+	}
+}
+
+const (
+
+	// MatchRuleTypeValue captures enum value "value"
+	MatchRuleTypeValue string = "value"
+
+	// MatchRuleTypeContains captures enum value "contains"
+	MatchRuleTypeContains string = "contains"
+
+	// MatchRuleTypeDoesNotContain captures enum value "does-not-contain"
+	MatchRuleTypeDoesNotContain string = "does-not-contain"
+
+	// MatchRuleTypeRegex captures enum value "regex"
+	MatchRuleTypeRegex string = "regex"
+
+	// MatchRuleTypePayloadHashSha1 captures enum value "payload-hash-sha1"
+	MatchRuleTypePayloadHashSha1 string = "payload-hash-sha1"
+
+	// MatchRuleTypePayloadHashSha256 captures enum value "payload-hash-sha256"
+	MatchRuleTypePayloadHashSha256 string = "payload-hash-sha256"
+)
+
+// prop value enum
+func (m *MatchRule) validateTypeEnum(path, location string, value string) error {
+	if err := validate.Enum(path, location, value, matchRuleTypeTypePropEnum); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (m *MatchRule) validateType(formats strfmt.Registry) error {
+
+	if swag.IsZero(m.Type) { // not required
+		return nil
+	}
+
+	// value enum
+	if err := m.validateTypeEnum("type", "body", m.Type); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (m *MatchRule) MarshalBinary() ([]byte, error) {
+	if m == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(m)
+}
+
+// UnmarshalBinary interface implementation
+func (m *MatchRule) UnmarshalBinary(b []byte) error {
+	var res MatchRule
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*m = res
 	return nil
 }

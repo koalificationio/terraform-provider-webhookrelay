@@ -5,6 +5,7 @@ import (
 	"log"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/helper/validation"
 	"github.com/koalificationio/go-webhookrelay/pkg/openapi/client"
 	"github.com/koalificationio/go-webhookrelay/pkg/openapi/client/buckets"
 	"github.com/koalificationio/go-webhookrelay/pkg/openapi/models"
@@ -33,9 +34,39 @@ func resourceWebhookrelayBucket() *schema.Resource {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
+			"auth": {
+				Type:     schema.TypeList,
+				Optional: true,
+				MaxItems: 1,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"type": {
+							Type:         schema.TypeString,
+							Optional:     true,
+							ValidateFunc: validation.StringInSlice([]string{"basic", "token"}, false),
+						},
+						"username": {
+							Type:     schema.TypeString,
+							Optional: true,
+						},
+						"password": {
+							Type:      schema.TypeString,
+							Optional:  true,
+							Sensitive: true,
+						},
+						"token": {
+							Type:          schema.TypeString,
+							Optional:      true,
+							Sensitive:     true,
+							ConflictsWith: []string{"auth.0.username", "auth.0.password"},
+						},
+					},
+				},
+			},
 			"websocket_streaming": {
 				Type:     schema.TypeBool,
 				Optional: true,
+				Default:  true,
 			},
 			"ephemeral_webhooks": {
 				Type:     schema.TypeBool,
@@ -76,7 +107,7 @@ func resourceWebhookrelayBucketCreate(d *schema.ResourceData, meta interface{}) 
 	}
 	d.SetId(resp.GetPayload().ID)
 
-	return resourceWebhookrelayBucketRead(d, meta)
+	return resourceWebhookrelayBucketUpdate(d, meta)
 }
 
 func resourceWebhookrelayBucketRead(d *schema.ResourceData, meta interface{}) error {
@@ -98,6 +129,10 @@ func resourceWebhookrelayBucketRead(d *schema.ResourceData, meta interface{}) er
 	d.Set("websocket_streaming", bucket.Stream)
 	d.Set("ephemeral_webhooks", bucket.Ephemeral)
 
+	if err := d.Set("auth", flattenBucketAuth(bucket.Auth)); err != nil {
+		return fmt.Errorf("error setting bucket auth: %w", err)
+	}
+
 	var defaultInput, inputs []*models.Input
 	for _, i := range bucket.Inputs {
 		if i.Name == defaultInputName {
@@ -115,16 +150,17 @@ func resourceWebhookrelayBucketRead(d *schema.ResourceData, meta interface{}) er
 		return fmt.Errorf("error setting inputs: %w", err)
 	}
 
-	return resourceWebhookrelayBucketUpdate(d, meta)
+	return nil
 }
 
 func resourceWebhookrelayBucketUpdate(d *schema.ResourceData, meta interface{}) error {
 	client := meta.(*client.Openapi)
 
-	if d.HasChanges("name", "description", "websocket_streaming", "ephemeral_webhooks") {
+	if d.HasChanges("name", "description", "auth", "websocket_streaming", "ephemeral_webhooks") {
 		request := &models.Bucket{
 			Name:        d.Get("name").(string),
 			Description: d.Get("description").(string),
+			Auth:        expandBucketAuth(d.Get("auth").([]interface{})),
 			Stream:      d.Get("websocket_streaming").(bool),
 			Ephemeral:   d.Get("ephemeral_webhooks").(bool),
 		}
@@ -138,16 +174,30 @@ func resourceWebhookrelayBucketUpdate(d *schema.ResourceData, meta interface{}) 
 	}
 
 	if d.Get("delete_default_input").(bool) {
-		for _, i := range d.Get("default_input").([]interface{}) {
-			err := deleteInput(client, d.Id(), i.(map[string]interface{})["id"].(string))
-			if err != nil {
-				return fmt.Errorf("error deleting default input %w", err)
+		params := buckets.NewGetV1BucketsBucketIDParams().WithBucketID(d.Id())
+		resp, err := client.Buckets.GetV1BucketsBucketID(params)
+		if err != nil {
+			if _, ok := err.(*buckets.GetV1BucketsBucketIDNotFound); ok {
+				log.Printf("[WARN] Removing bucket %s from state because it's gone", d.Id())
+				d.SetId("")
+				return nil
+			}
+			return fmt.Errorf("error reading bucket details: %w", err)
+		}
+
+		bucket := resp.GetPayload()
+		for _, i := range bucket.Inputs {
+			if i.Name == defaultInputName {
+				err := deleteInput(client, d.Id(), i.ID)
+				if err != nil {
+					return fmt.Errorf("error deleting default input %w", err)
+				}
 			}
 		}
 		d.Set("default_input", nil)
 	}
 
-	return nil
+	return resourceWebhookrelayBucketRead(d, meta)
 }
 
 func resourceWebhookrelayBucketDelete(d *schema.ResourceData, meta interface{}) error {
