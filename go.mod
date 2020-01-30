@@ -4,7 +4,7 @@ go 1.13
 
 require (
 	github.com/bflad/tfproviderdocs v0.4.1
-	github.com/bflad/tfproviderlint v0.7.0
+	github.com/bflad/tfproviderlint v0.8.0
 	github.com/client9/misspell v0.3.4
 	github.com/go-openapi/strfmt v0.19.4
 	github.com/golangci/golangci-lint v1.22.2
