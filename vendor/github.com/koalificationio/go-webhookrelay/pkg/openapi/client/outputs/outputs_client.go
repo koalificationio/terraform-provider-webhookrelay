@@ -9,12 +9,11 @@ import (
 	"fmt"
 
 	"github.com/go-openapi/runtime"
-
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 )
 
 // New creates a new outputs API client.
-func New(transport runtime.ClientTransport, formats strfmt.Registry) *Client {
+func New(transport runtime.ClientTransport, formats strfmt.Registry) ClientService {
 	return &Client{transport: transport, formats: formats}
 }
 
@@ -26,8 +25,19 @@ type Client struct {
 	formats   strfmt.Registry
 }
 
+// ClientService is the interface for Client methods
+type ClientService interface {
+	DeleteV1BucketsBucketIDOutputsOutputID(params *DeleteV1BucketsBucketIDOutputsOutputIDParams) (*DeleteV1BucketsBucketIDOutputsOutputIDOK, error)
+
+	PostV1BucketsBucketIDOutputs(params *PostV1BucketsBucketIDOutputsParams) (*PostV1BucketsBucketIDOutputsCreated, error)
+
+	PutV1BucketsBucketIDOutputsOutputID(params *PutV1BucketsBucketIDOutputsOutputIDParams) (*PutV1BucketsBucketIDOutputsOutputIDOK, error)
+
+	SetTransport(transport runtime.ClientTransport)
+}
+
 /*
-DeleteV1BucketsBucketIDOutputsOutputID deletes output
+  DeleteV1BucketsBucketIDOutputsOutputID deletes output
 */
 func (a *Client) DeleteV1BucketsBucketIDOutputsOutputID(params *DeleteV1BucketsBucketIDOutputsOutputIDParams) (*DeleteV1BucketsBucketIDOutputsOutputIDOK, error) {
 	// TODO: Validate the params before sending
@@ -61,9 +71,9 @@ func (a *Client) DeleteV1BucketsBucketIDOutputsOutputID(params *DeleteV1BucketsB
 }
 
 /*
-PostV1BucketsBucketIDOutputs creates a new output
+  PostV1BucketsBucketIDOutputs creates a new output
 
-Create one or more outputs for the bucket to start forwarding webhooks to those destinations.
+  Create one or more outputs for the bucket to start forwarding webhooks to those destinations.
 */
 func (a *Client) PostV1BucketsBucketIDOutputs(params *PostV1BucketsBucketIDOutputsParams) (*PostV1BucketsBucketIDOutputsCreated, error) {
 	// TODO: Validate the params before sending
@@ -97,9 +107,9 @@ func (a *Client) PostV1BucketsBucketIDOutputs(params *PostV1BucketsBucketIDOutpu
 }
 
 /*
-PutV1BucketsBucketIDOutputsOutputID updates output
+  PutV1BucketsBucketIDOutputsOutputID updates output
 
-Update output destination or make it public/internal.
+  Update output destination or make it public/internal.
 */
 func (a *Client) PutV1BucketsBucketIDOutputsOutputID(params *PutV1BucketsBucketIDOutputsOutputIDParams) (*PutV1BucketsBucketIDOutputsOutputIDOK, error) {
 	// TODO: Validate the params before sending

@@ -9,8 +9,7 @@ import (
 	"fmt"
 
 	"github.com/go-openapi/runtime"
-
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 )
 
 // DeleteV1TunnelsTunnelIDReader is a Reader for the DeleteV1TunnelsTunnelID structure.

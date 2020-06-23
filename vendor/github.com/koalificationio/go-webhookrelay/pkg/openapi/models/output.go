@@ -6,13 +6,13 @@ package models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	strfmt "github.com/go-openapi/strfmt"
-
 	"github.com/go-openapi/errors"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
 
 // Output Output
+//
 // swagger:model Output
 type Output struct {
 
@@ -30,6 +30,9 @@ type Output struct {
 	// Destination, where to forward the webhook, such as 'http://localhost:4000'
 	Destination string `json:"destination,omitempty"`
 
+	// ID of the function that will be executed for this output
+	FunctionID string `json:"function_id,omitempty"`
+
 	// Headers to override (for example Host)
 	Headers Headers `json:"headers,omitempty"`
 
@@ -46,7 +49,10 @@ type Output struct {
 	// Request matching rules, documentation can be found here https://webhookrelay.com/v1/guide/webhook-forwarding.html#Request-matching-rules
 	Rules *Rules `json:"rules,omitempty"`
 
-	// Enforce TLS verification where possible (internal relay agent)
+	// Timeout in seconds, value between 0 and 180
+	Timeout int64 `json:"timeout,omitempty"`
+
+	// Enforce TLS verification where possible (internal and public destinations)
 	TLSVerification bool `json:"tls_verification,omitempty"`
 
 	// updated at
@@ -58,6 +64,10 @@ type Output struct {
 func (m *Output) Validate(formats strfmt.Registry) error {
 	var res []error
 
+	if err := m.validateHeaders(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.validateRules(formats); err != nil {
 		res = append(res, err)
 	}
@@ -65,6 +75,22 @@ func (m *Output) Validate(formats strfmt.Registry) error {
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
+	return nil
+}
+
+func (m *Output) validateHeaders(formats strfmt.Registry) error {
+
+	if swag.IsZero(m.Headers) { // not required
+		return nil
+	}
+
+	if err := m.Headers.Validate(formats); err != nil {
+		if ve, ok := err.(*errors.Validation); ok {
+			return ve.ValidateName("headers")
+		}
+		return err
+	}
+
 	return nil
 }
 

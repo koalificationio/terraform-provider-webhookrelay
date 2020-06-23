@@ -323,11 +323,13 @@ func saveIssuesToCache(allPkgs []*packages.Package, pkgsFromCache map[*packages.
 				for ind := range pkgIssues {
 					i := &pkgIssues[ind]
 					encodedIssues = append(encodedIssues, EncodingIssue{
-						FromLinter:  i.FromLinter,
-						Text:        i.Text,
-						Pos:         i.Pos,
-						LineRange:   i.LineRange,
-						Replacement: i.Replacement,
+						FromLinter:           i.FromLinter,
+						Text:                 i.Text,
+						Pos:                  i.Pos,
+						LineRange:            i.LineRange,
+						Replacement:          i.Replacement,
+						ExpectNoLint:         i.ExpectNoLint,
+						ExpectedNoLintLinter: i.ExpectedNoLintLinter,
 					})
 				}
 
@@ -392,12 +394,14 @@ func loadIssuesFromCache(pkgs []*packages.Package, lintCtx *linter.Context,
 				issues := make([]result.Issue, 0, len(pkgIssues))
 				for _, i := range pkgIssues {
 					issues = append(issues, result.Issue{
-						FromLinter:  i.FromLinter,
-						Text:        i.Text,
-						Pos:         i.Pos,
-						LineRange:   i.LineRange,
-						Replacement: i.Replacement,
-						Pkg:         pkg,
+						FromLinter:           i.FromLinter,
+						Text:                 i.Text,
+						Pos:                  i.Pos,
+						LineRange:            i.LineRange,
+						Replacement:          i.Replacement,
+						Pkg:                  pkg,
+						ExpectNoLint:         i.ExpectNoLint,
+						ExpectedNoLintLinter: i.ExpectedNoLintLinter,
 					})
 				}
 				cacheRes.issues = issues
@@ -432,7 +436,9 @@ func loadIssuesFromCache(pkgs []*packages.Package, lintCtx *linter.Context,
 func runAnalyzers(cfg runAnalyzersConfig, lintCtx *linter.Context) ([]result.Issue, error) {
 	log := lintCtx.Log.Child("goanalysis")
 	sw := timeutils.NewStopwatch("analyzers", log)
-	defer sw.PrintTopStages(10)
+
+	const stagesToPrint = 10
+	defer sw.PrintTopStages(stagesToPrint)
 
 	runner := newRunner(cfg.getName(), log, lintCtx.PkgCache, lintCtx.LoadGuard, cfg.getLoadMode(), sw)
 

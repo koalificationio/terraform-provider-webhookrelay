@@ -9,12 +9,11 @@ import (
 	"fmt"
 
 	"github.com/go-openapi/runtime"
-
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 )
 
 // New creates a new inputs API client.
-func New(transport runtime.ClientTransport, formats strfmt.Registry) *Client {
+func New(transport runtime.ClientTransport, formats strfmt.Registry) ClientService {
 	return &Client{transport: transport, formats: formats}
 }
 
@@ -26,10 +25,21 @@ type Client struct {
 	formats   strfmt.Registry
 }
 
-/*
-DeleteV1BucketsBucketIDInputsInputID deletes input
+// ClientService is the interface for Client methods
+type ClientService interface {
+	DeleteV1BucketsBucketIDInputsInputID(params *DeleteV1BucketsBucketIDInputsInputIDParams) (*DeleteV1BucketsBucketIDInputsInputIDOK, error)
 
-Delete input. Once input is deleted, you will not be able to recreate a new input with the same ID.
+	PostV1BucketsBucketIDInputs(params *PostV1BucketsBucketIDInputsParams) (*PostV1BucketsBucketIDInputsCreated, error)
+
+	PutV1BucketsBucketIDInputsInputID(params *PutV1BucketsBucketIDInputsInputIDParams) (*PutV1BucketsBucketIDInputsInputIDOK, error)
+
+	SetTransport(transport runtime.ClientTransport)
+}
+
+/*
+  DeleteV1BucketsBucketIDInputsInputID deletes input
+
+  Delete input. Once input is deleted, you will not be able to recreate a new input with the same ID.
 */
 func (a *Client) DeleteV1BucketsBucketIDInputsInputID(params *DeleteV1BucketsBucketIDInputsInputIDParams) (*DeleteV1BucketsBucketIDInputsInputIDOK, error) {
 	// TODO: Validate the params before sending
@@ -63,9 +73,9 @@ func (a *Client) DeleteV1BucketsBucketIDInputsInputID(params *DeleteV1BucketsBuc
 }
 
 /*
-PostV1BucketsBucketIDInputs creates a new input
+  PostV1BucketsBucketIDInputs creates a new input
 
-Create one or more inputs for the bucket to get unique public endpoints.
+  Create one or more inputs for the bucket to get unique public endpoints.
 */
 func (a *Client) PostV1BucketsBucketIDInputs(params *PostV1BucketsBucketIDInputsParams) (*PostV1BucketsBucketIDInputsCreated, error) {
 	// TODO: Validate the params before sending
@@ -99,9 +109,9 @@ func (a *Client) PostV1BucketsBucketIDInputs(params *PostV1BucketsBucketIDInputs
 }
 
 /*
-PutV1BucketsBucketIDInputsInputID updates input
+  PutV1BucketsBucketIDInputsInputID updates input
 
-Update input endpoint response code, body or headers.
+  Update input endpoint response code, body or headers.
 */
 func (a *Client) PutV1BucketsBucketIDInputsInputID(params *PutV1BucketsBucketIDInputsInputIDParams) (*PutV1BucketsBucketIDInputsInputIDOK, error) {
 	// TODO: Validate the params before sending

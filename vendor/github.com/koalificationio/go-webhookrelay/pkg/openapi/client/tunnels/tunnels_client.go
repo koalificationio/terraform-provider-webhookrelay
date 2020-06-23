@@ -9,12 +9,11 @@ import (
 	"fmt"
 
 	"github.com/go-openapi/runtime"
-
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 )
 
 // New creates a new tunnels API client.
-func New(transport runtime.ClientTransport, formats strfmt.Registry) *Client {
+func New(transport runtime.ClientTransport, formats strfmt.Registry) ClientService {
 	return &Client{transport: transport, formats: formats}
 }
 
@@ -26,8 +25,23 @@ type Client struct {
 	formats   strfmt.Registry
 }
 
+// ClientService is the interface for Client methods
+type ClientService interface {
+	DeleteV1TunnelsTunnelID(params *DeleteV1TunnelsTunnelIDParams) (*DeleteV1TunnelsTunnelIDOK, error)
+
+	GetV1Tunnels(params *GetV1TunnelsParams) (*GetV1TunnelsOK, error)
+
+	GetV1TunnelsTunnelID(params *GetV1TunnelsTunnelIDParams) (*GetV1TunnelsTunnelIDOK, error)
+
+	PostV1Tunnels(params *PostV1TunnelsParams) (*PostV1TunnelsCreated, error)
+
+	PutV1TunnelsTunnelID(params *PutV1TunnelsTunnelIDParams) (*PutV1TunnelsTunnelIDOK, error)
+
+	SetTransport(transport runtime.ClientTransport)
+}
+
 /*
-DeleteV1TunnelsTunnelID deletes tunnel
+  DeleteV1TunnelsTunnelID deletes tunnel
 */
 func (a *Client) DeleteV1TunnelsTunnelID(params *DeleteV1TunnelsTunnelIDParams) (*DeleteV1TunnelsTunnelIDOK, error) {
 	// TODO: Validate the params before sending
@@ -61,7 +75,7 @@ func (a *Client) DeleteV1TunnelsTunnelID(params *DeleteV1TunnelsTunnelIDParams) 
 }
 
 /*
-GetV1Tunnels lists all tunnels
+  GetV1Tunnels lists all tunnels
 */
 func (a *Client) GetV1Tunnels(params *GetV1TunnelsParams) (*GetV1TunnelsOK, error) {
 	// TODO: Validate the params before sending
@@ -95,7 +109,7 @@ func (a *Client) GetV1Tunnels(params *GetV1TunnelsParams) (*GetV1TunnelsOK, erro
 }
 
 /*
-GetV1TunnelsTunnelID gets tunnel details
+  GetV1TunnelsTunnelID gets tunnel details
 */
 func (a *Client) GetV1TunnelsTunnelID(params *GetV1TunnelsTunnelIDParams) (*GetV1TunnelsTunnelIDOK, error) {
 	// TODO: Validate the params before sending
@@ -129,9 +143,9 @@ func (a *Client) GetV1TunnelsTunnelID(params *GetV1TunnelsTunnelIDParams) (*GetV
 }
 
 /*
-PostV1Tunnels creates a new tunnel
+  PostV1Tunnels creates a new tunnel
 
-You may create your own tunnel using this action. It takes a JSON object containing a tunnel request with a specified destination. Paid plans have an option to specify either encryption, subdomain or full domain.
+  You may create your own tunnel using this action. It takes a JSON object containing a tunnel request with a specified destination. Paid plans have an option to specify either encryption, subdomain or full domain.
 */
 func (a *Client) PostV1Tunnels(params *PostV1TunnelsParams) (*PostV1TunnelsCreated, error) {
 	// TODO: Validate the params before sending
@@ -165,7 +179,7 @@ func (a *Client) PostV1Tunnels(params *PostV1TunnelsParams) (*PostV1TunnelsCreat
 }
 
 /*
-PutV1TunnelsTunnelID updates tunnel details
+  PutV1TunnelsTunnelID updates tunnel details
 */
 func (a *Client) PutV1TunnelsTunnelID(params *PutV1TunnelsTunnelIDParams) (*PutV1TunnelsTunnelIDOK, error) {
 	// TODO: Validate the params before sending

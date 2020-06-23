@@ -9,12 +9,11 @@ import (
 	"fmt"
 
 	"github.com/go-openapi/runtime"
-
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 )
 
 // New creates a new buckets API client.
-func New(transport runtime.ClientTransport, formats strfmt.Registry) *Client {
+func New(transport runtime.ClientTransport, formats strfmt.Registry) ClientService {
 	return &Client{transport: transport, formats: formats}
 }
 
@@ -26,8 +25,23 @@ type Client struct {
 	formats   strfmt.Registry
 }
 
+// ClientService is the interface for Client methods
+type ClientService interface {
+	DeleteV1BucketsBucketID(params *DeleteV1BucketsBucketIDParams) (*DeleteV1BucketsBucketIDOK, error)
+
+	GetV1Buckets(params *GetV1BucketsParams) (*GetV1BucketsOK, error)
+
+	GetV1BucketsBucketID(params *GetV1BucketsBucketIDParams) (*GetV1BucketsBucketIDOK, error)
+
+	PostV1Buckets(params *PostV1BucketsParams) (*PostV1BucketsCreated, error)
+
+	PutV1BucketsBucketID(params *PutV1BucketsBucketIDParams) (*PutV1BucketsBucketIDOK, error)
+
+	SetTransport(transport runtime.ClientTransport)
+}
+
 /*
-DeleteV1BucketsBucketID deletes bucket
+  DeleteV1BucketsBucketID deletes bucket
 */
 func (a *Client) DeleteV1BucketsBucketID(params *DeleteV1BucketsBucketIDParams) (*DeleteV1BucketsBucketIDOK, error) {
 	// TODO: Validate the params before sending
@@ -61,7 +75,7 @@ func (a *Client) DeleteV1BucketsBucketID(params *DeleteV1BucketsBucketIDParams) 
 }
 
 /*
-GetV1Buckets lists all buckets
+  GetV1Buckets lists all buckets
 */
 func (a *Client) GetV1Buckets(params *GetV1BucketsParams) (*GetV1BucketsOK, error) {
 	// TODO: Validate the params before sending
@@ -95,7 +109,7 @@ func (a *Client) GetV1Buckets(params *GetV1BucketsParams) (*GetV1BucketsOK, erro
 }
 
 /*
-GetV1BucketsBucketID gets bucket details
+  GetV1BucketsBucketID gets bucket details
 */
 func (a *Client) GetV1BucketsBucketID(params *GetV1BucketsBucketIDParams) (*GetV1BucketsBucketIDOK, error) {
 	// TODO: Validate the params before sending
@@ -129,9 +143,9 @@ func (a *Client) GetV1BucketsBucketID(params *GetV1BucketsBucketIDParams) (*GetV
 }
 
 /*
-PostV1Buckets creates a new bucket
+  PostV1Buckets creates a new bucket
 
-You may create your own bucket using this action. It takes a JSON object containing a bucket request. Once bucket is created, it gets  assigned a default input to accept webhooks but you will still have to  create a new output to give it a destination.
+  You may create your own bucket using this action. It takes a JSON object containing a bucket request. Once bucket is created, it gets  assigned a default input to accept webhooks but you will still have to  create a new output to give it a destination.
 */
 func (a *Client) PostV1Buckets(params *PostV1BucketsParams) (*PostV1BucketsCreated, error) {
 	// TODO: Validate the params before sending
@@ -165,9 +179,9 @@ func (a *Client) PostV1Buckets(params *PostV1BucketsParams) (*PostV1BucketsCreat
 }
 
 /*
-PutV1BucketsBucketID updates bucket
+  PutV1BucketsBucketID updates bucket
 
-Update bucket.
+  Update bucket.
 */
 func (a *Client) PutV1BucketsBucketID(params *PutV1BucketsBucketIDParams) (*PutV1BucketsBucketIDOK, error) {
 	// TODO: Validate the params before sending

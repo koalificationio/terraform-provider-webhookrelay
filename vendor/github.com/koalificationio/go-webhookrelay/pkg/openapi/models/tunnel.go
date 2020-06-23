@@ -8,14 +8,14 @@ package models
 import (
 	"encoding/json"
 
-	strfmt "github.com/go-openapi/strfmt"
-
 	"github.com/go-openapi/errors"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
 )
 
 // Tunnel Tunnel
+//
 // swagger:model Tunnel
 type Tunnel struct {
 
@@ -167,8 +167,8 @@ func init() {
 
 const (
 
-	// TunnelRegion captures enum value ""
-	TunnelRegion string = ""
+	// TunnelRegionEmpty captures enum value ""
+	TunnelRegionEmpty string = ""
 
 	// TunnelRegionUsWest captures enum value "us-west"
 	TunnelRegionUsWest string = "us-west"
