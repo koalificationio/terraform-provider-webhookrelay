@@ -34,10 +34,11 @@ func Provider() terraform.ResourceProvider {
 		},
 
 		ResourcesMap: map[string]*schema.Resource{
-			"webhookrelay_bucket": resourceWebhookrelayBucket(),
-			"webhookrelay_input":  resourceWebhookrelayInput(),
-			"webhookrelay_output": resourceWebhookrelayOutput(),
-			"webhookrelay_token":  resourceWebhookrelayToken(),
+			"webhookrelay_bucket":   resourceWebhookrelayBucket(),
+			"webhookrelay_input":    resourceWebhookrelayInput(),
+			"webhookrelay_function": resourceWebhookrelayFunction(),
+			"webhookrelay_output":   resourceWebhookrelayOutput(),
+			"webhookrelay_token":    resourceWebhookrelayToken(),
 		},
 
 		ConfigureFunc: providerConfigure,
