@@ -38,6 +38,13 @@ func resourceWebhookrelayFunction() *schema.Resource {
 				Default:      "lua",
 				ValidateFunc: validation.StringInSlice([]string{"lua", "wasi"}, false),
 			},
+			"config": {
+				Type:     schema.TypeMap,
+				Optional: true,
+				Elem: &schema.Schema{
+					Type: schema.TypeString,
+				},
+			},
 		},
 	}
 }
@@ -80,6 +87,16 @@ func resourceWebhookrelayFunctionRead(d *schema.ResourceData, meta interface{}) 
 	d.Set("name", function.Name)
 	d.Set("payload", function.Payload)
 
+	configParams := functions.NewGetV1FunctionsFunctionIDConfigParams().WithFunctionID(d.Id())
+	configResp, err := client.Functions.GetV1FunctionsFunctionIDConfig(configParams)
+	if err != nil {
+		return fmt.Errorf("error reading function details: %w", err)
+	}
+
+	if err := d.Set("config", flattenFunctionConfig(configResp.Payload)); err != nil {
+		return fmt.Errorf("error parsing function config: %w", err)
+	}
+
 	return nil
 }
 
@@ -98,6 +115,46 @@ func resourceWebhookrelayFunctionUpdate(d *schema.ResourceData, meta interface{}
 		_, err := client.Functions.PutV1FunctionsFunctionID(params)
 		if err != nil {
 			return fmt.Errorf("error updating function: %w", err)
+		}
+	}
+
+	if d.HasChange("config") {
+		o, n := d.GetChange("config")
+		if o == nil {
+			o = make(map[string]interface{})
+		}
+		if n == nil {
+			n = make(map[string]interface{})
+		}
+
+		oc := o.(map[string]interface{})
+		nc := n.(map[string]interface{})
+
+		for k := range oc {
+			if _, ok := nc[k]; !ok {
+				params := functions.DeleteV1FunctionsFunctionIDConfigConfigKeyParams{
+					ConfigKey:  k,
+					FunctionID: d.Id(),
+				}
+
+				_, err := client.Functions.DeleteV1FunctionsFunctionIDConfigConfigKey(&params)
+				if err != nil {
+					return fmt.Errorf("error deleting function config key: %w", err)
+				}
+			}
+		}
+
+		for k, v := range nc {
+			config := models.FunctionConfig{
+				Key:   k,
+				Value: v.(string),
+			}
+			params := functions.NewPutV1FunctionsFunctionIDConfigParams().WithFunctionID(d.Id()).WithBody(&config)
+
+			_, err := client.Functions.PutV1FunctionsFunctionIDConfig(params)
+			if err != nil {
+				return fmt.Errorf("error updating function config: %w", err)
+			}
 		}
 	}
 

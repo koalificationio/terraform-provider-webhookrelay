@@ -104,28 +104,24 @@ func expandBucketAuth(config []interface{}) *models.BucketAuth {
 func flattenHeaders(headers models.Headers) map[string]interface{} {
 	config := make(map[string]interface{})
 
-	m := interface{}(headers).(map[string]interface{})
+	m := map[string]models.HeaderItem(headers)
 
 	for h, v := range m {
-		a := v.([]interface{})
-		b := make([]string, len(a))
-		for i := range v.([]interface{}) {
-			b[i] = a[i].(string)
-		}
-		config[h] = strings.Join(b, ";")
+		a := []string(v)
+		config[h] = strings.Join(a, ";")
 	}
 
 	return config
 }
 
 func expandHeaders(config map[string]interface{}) models.Headers {
-	headers := make(map[string][]string)
+	headers := make(map[string]models.HeaderItem)
 
 	for h, v := range config {
-		headers[h] = []string{v.(string)}
+		headers[h] = models.HeaderItem{v.(string)}
 	}
 
-	return interface{}(headers).(models.Headers)
+	return models.Headers(headers)
 }
 
 func flattenOutputRules(rules *models.Rules) (string, error) {
@@ -155,4 +151,14 @@ func expandOutputRules(config string) (*models.Rules, error) {
 	}
 
 	return &rules, nil
+}
+
+func flattenFunctionConfig(config []*models.FunctionConfig) map[string]interface{} {
+	result := make(map[string]interface{})
+
+	for _, c := range config {
+		result[c.Key] = c.Value
+	}
+
+	return result
 }

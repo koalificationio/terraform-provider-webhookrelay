@@ -94,6 +94,32 @@ func TestAccWebhookrelayFunction_Basic(t *testing.T) {
 						resName, "driver", "lua"),
 					resource.TestCheckResourceAttr(
 						resName, "payload", payloadNewBase64),
+					resource.TestCheckResourceAttr(
+						resName, "config.%", "0"),
+				),
+			},
+			{
+				Config: testAccCheckWebhookrelayFunctionConfig_WithConfig(functionNew, payloadNew),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckWebhookrelayFunctionExists(resName),
+					resource.TestCheckResourceAttr(
+						resName, "name", functionNew),
+					resource.TestCheckResourceAttr(
+						resName, "config.%", "1"),
+					resource.TestCheckResourceAttr(
+						resName, "config.SOME_NAME", "secret"),
+				),
+			},
+			{
+				Config: testAccCheckWebhookrelayFunctionConfig_UpdateConfig(functionNew, payloadNew),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckWebhookrelayFunctionExists(resName),
+					resource.TestCheckResourceAttr(
+						resName, "name", functionNew),
+					resource.TestCheckResourceAttr(
+						resName, "config.%", "2"),
+					resource.TestCheckResourceAttr(
+						resName, "config.SOME_NAME", "password"),
 				),
 			},
 		},
@@ -160,5 +186,32 @@ resource "webhookrelay_function" "foo" {
   name    = "%s"
   payload = base64encode("%s")
   driver  = "lua"
+}`, name, payload)
+}
+
+func testAccCheckWebhookrelayFunctionConfig_WithConfig(name, payload string) string {
+	return fmt.Sprintf(`
+resource "webhookrelay_function" "foo" {
+  name    = "%s"
+  payload = base64encode("%s")
+  driver  = "lua"
+
+  config = {
+    "SOME_NAME" = "secret"
+  }
+}`, name, payload)
+}
+
+func testAccCheckWebhookrelayFunctionConfig_UpdateConfig(name, payload string) string {
+	return fmt.Sprintf(`
+resource "webhookrelay_function" "foo" {
+  name    = "%s"
+  payload = base64encode("%s")
+  driver  = "lua"
+
+  config = {
+    "SOME_NAME" = "password"
+    "OTHER_SECRET" = "seret"
+  }
 }`, name, payload)
 }
