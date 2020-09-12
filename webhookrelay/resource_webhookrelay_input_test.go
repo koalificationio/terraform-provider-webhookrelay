@@ -2,6 +2,7 @@ package webhookrelay
 
 import (
 	"fmt"
+	"regexp"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/acctest"
@@ -22,6 +23,8 @@ func TestAccWebhookrelayInput_Basic(t *testing.T) {
 
 	resName := "webhookrelay_input.foo"
 
+	guidCheck := regexp.MustCompile("[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}")
+
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    testAccProviders,
@@ -41,6 +44,8 @@ func TestAccWebhookrelayInput_Basic(t *testing.T) {
 						resName, "headers.%", "2"),
 					resource.TestCheckResourceAttr(
 						resName, "headers.Content-Type", "text/html; charset=utf-8"),
+					resource.TestMatchResourceAttr(
+						resName, "function_id", guidCheck),
 				),
 			},
 			{
@@ -57,6 +62,8 @@ func TestAccWebhookrelayInput_Basic(t *testing.T) {
 						resName, "response_body", ""),
 					resource.TestCheckResourceAttr(
 						resName, "headers.%", "0"),
+					resource.TestCheckResourceAttr(
+						resName, "function_id", ""),
 				),
 			},
 			{
@@ -67,6 +74,8 @@ func TestAccWebhookrelayInput_Basic(t *testing.T) {
 						resName, "name", inputNewName),
 					resource.TestCheckResourceAttr(
 						resName, "description", "foo"),
+					resource.TestMatchResourceAttr(
+						resName, "function_id", guidCheck),
 				),
 			},
 		},
@@ -154,7 +163,15 @@ resource "webhookrelay_input" "foo" {
     Content-Type  = "text/html; charset=utf-8"
     Foo           = "Bar"
   }
-}`, bucket, name)
+  function_id = webhookrelay_function.foo.id
+}
+
+resource "webhookrelay_function" "foo" {
+  name    = "%s"
+  payload = base64encode("r:SetRequestMethod('PUT')")
+  driver  = "lua"
+}
+`, bucket, name, name)
 }
 
 func testAccCheckWebhookrelayInputConfigUpdated(name, bucket string) string {
@@ -170,5 +187,12 @@ resource "webhookrelay_input" "foo" {
   description = "bar"
   bucket_id   = webhookrelay_bucket.foo.id
   status_code = 402
-}`, bucket, name)
+}
+
+resource "webhookrelay_function" "foo" {
+  name    = "%s"
+  payload = base64encode("r:SetRequestMethod('PUT')")
+  driver  = "lua"
+}
+`, bucket, name, name)
 }

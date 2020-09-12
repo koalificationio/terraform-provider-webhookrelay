@@ -1,3 +1,11 @@
+## 0.1.3
+
+ENHANCEMENTS:
+
+* `r/webhookrelay_function` - add new resource `webhookrelay_function` ([#20](https://github.com/koalificationio/terraform-provider-webhookrelay/issues/20))
+* `r/webhookrelay_input` - add `function_id` parameter ([#20](https://github.com/koalificationio/terraform-provider-webhookrelay/issues/20))
+* `r/webhookrelay_output` - add `function_id` parameter ([#20](https://github.com/koalificationio/terraform-provider-webhookrelay/issues/20))
+
 ## 0.1.2
 
 ENHANCEMENTS:
