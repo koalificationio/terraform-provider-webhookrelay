@@ -6,12 +6,13 @@ package models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	strfmt "github.com/go-openapi/strfmt"
-
+	"github.com/go-openapi/errors"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
 
 // Input Input
+//
 // swagger:model Input
 type Input struct {
 
@@ -22,8 +23,14 @@ type Input struct {
 	// Read Only: true
 	CreatedAt int64 `json:"created_at,omitempty"`
 
+	// Specify any custom domain from your Reserved Domains, such as example.hooks.webhookrelay.com or hooks.example.com (if used with your own top level domain name, create a CNAME pointing at hooks.webhookrelay.com)
+	CustomDomain string `json:"custom_domain,omitempty"`
+
 	// description
 	Description string `json:"description,omitempty"`
+
+	// ID of the function that will be executed for this input
+	FunctionID string `json:"function_id,omitempty"`
 
 	// headers
 	Headers Headers `json:"headers,omitempty"`
@@ -35,6 +42,12 @@ type Input struct {
 	// name
 	Name string `json:"name,omitempty"`
 
+	// When used with custom domains, path_prefix can host multiple input endpoints on a single domain, such as hooks.example.com/github -> Jenkins CI, hooks.example.com/gitlab -> Spinnaker
+	PathPrefix string `json:"path_prefix,omitempty"`
+
+	// Output ID to specify a single output for response or set it to 'anyOutput' to return response from any output. Output should respond within 10 seconds
+	ResponseFromOutput string `json:"response_from_output,omitempty"`
+
 	// Response status code to return when this input receives a webhook
 	StatusCode int64 `json:"status_code,omitempty"`
 
@@ -45,6 +58,31 @@ type Input struct {
 
 // Validate validates this input
 func (m *Input) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.validateHeaders(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (m *Input) validateHeaders(formats strfmt.Registry) error {
+
+	if swag.IsZero(m.Headers) { // not required
+		return nil
+	}
+
+	if err := m.Headers.Validate(formats); err != nil {
+		if ve, ok := err.(*errors.Validation); ok {
+			return ve.ValidateName("headers")
+		}
+		return err
+	}
+
 	return nil
 }
 

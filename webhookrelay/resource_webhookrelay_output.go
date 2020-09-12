@@ -56,7 +56,7 @@ func resourceWebhookrelayOutput() *schema.Resource {
 				Type:     schema.TypeString,
 				Optional: true,
 				ValidateFunc: validation.All(
-					validation.ValidateJsonString,
+					validation.StringIsJSON,
 					validateOutputRules,
 				),
 				StateFunc: func(v interface{}) string {
@@ -64,6 +64,10 @@ func resourceWebhookrelayOutput() *schema.Resource {
 					return json
 				},
 				DiffSuppressFunc: structure.SuppressJsonDiff,
+			},
+			"function_id": {
+				Type:     schema.TypeString,
+				Optional: true,
 			},
 		},
 	}
@@ -89,6 +93,7 @@ func resourceWebhookrelayOutputCreate(d *schema.ResourceData, meta interface{}) 
 		Destination:     d.Get("destination").(string),
 		Internal:        d.Get("internal").(bool),
 		TLSVerification: d.Get("tls_verification").(bool),
+		FunctionID:      d.Get("function_id").(string),
 	}
 
 	if v, err := expandOutputRules(d.Get("rules").(string)); err != nil {
@@ -142,6 +147,7 @@ func resourceWebhookrelayOutputRead(d *schema.ResourceData, meta interface{}) er
 	d.Set("destination", output.Destination)
 	d.Set("internal", output.Internal)
 	d.Set("tls_verification", output.TLSVerification)
+	d.Set("function_id", output.FunctionID)
 
 	if v, err := flattenOutputRules(output.Rules); err != nil {
 		return err
@@ -155,13 +161,14 @@ func resourceWebhookrelayOutputRead(d *schema.ResourceData, meta interface{}) er
 func resourceWebhookrelayOutputUpdate(d *schema.ResourceData, meta interface{}) error {
 	client := meta.(*client.Openapi)
 
-	if d.HasChanges("description", "destination", "internal", "tls_verification") {
+	if d.HasChanges("description", "destination", "internal", "tls_verification", "function_id") {
 		request := &models.Output{
 			Name:            d.Get("name").(string),
 			Description:     d.Get("description").(string),
 			Destination:     d.Get("destination").(string),
 			Internal:        d.Get("internal").(bool),
 			TLSVerification: d.Get("tls_verification").(bool),
+			FunctionID:      d.Get("function_id").(string),
 		}
 
 		if v, err := expandOutputRules(d.Get("rules").(string)); err != nil {

@@ -8,14 +8,14 @@ package models
 import (
 	"encoding/json"
 
-	strfmt "github.com/go-openapi/strfmt"
-
 	"github.com/go-openapi/errors"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
 )
 
 // Tunnel Tunnel
+//
 // swagger:model Tunnel
 type Tunnel struct {
 
@@ -133,7 +133,7 @@ const (
 
 // prop value enum
 func (m *Tunnel) validateCryptoEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, tunnelTypeCryptoPropEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, tunnelTypeCryptoPropEnum, true); err != nil {
 		return err
 	}
 	return nil
@@ -167,8 +167,8 @@ func init() {
 
 const (
 
-	// TunnelRegion captures enum value ""
-	TunnelRegion string = ""
+	// TunnelRegionEmpty captures enum value ""
+	TunnelRegionEmpty string = ""
 
 	// TunnelRegionUsWest captures enum value "us-west"
 	TunnelRegionUsWest string = "us-west"
@@ -182,7 +182,7 @@ const (
 
 // prop value enum
 func (m *Tunnel) validateRegionEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, tunnelTypeRegionPropEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, tunnelTypeRegionPropEnum, true); err != nil {
 		return err
 	}
 	return nil

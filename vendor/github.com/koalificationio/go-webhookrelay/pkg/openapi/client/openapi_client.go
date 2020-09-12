@@ -8,11 +8,13 @@ package client
 import (
 	"github.com/go-openapi/runtime"
 	httptransport "github.com/go-openapi/runtime/client"
-
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 
 	"github.com/koalificationio/go-webhookrelay/pkg/openapi/client/buckets"
+	"github.com/koalificationio/go-webhookrelay/pkg/openapi/client/domains"
+	"github.com/koalificationio/go-webhookrelay/pkg/openapi/client/functions"
 	"github.com/koalificationio/go-webhookrelay/pkg/openapi/client/inputs"
+	"github.com/koalificationio/go-webhookrelay/pkg/openapi/client/logs"
 	"github.com/koalificationio/go-webhookrelay/pkg/openapi/client/outputs"
 	"github.com/koalificationio/go-webhookrelay/pkg/openapi/client/tokens"
 	"github.com/koalificationio/go-webhookrelay/pkg/openapi/client/tunnels"
@@ -60,17 +62,14 @@ func New(transport runtime.ClientTransport, formats strfmt.Registry) *Openapi {
 
 	cli := new(Openapi)
 	cli.Transport = transport
-
 	cli.Buckets = buckets.New(transport, formats)
-
+	cli.Domains = domains.New(transport, formats)
+	cli.Functions = functions.New(transport, formats)
 	cli.Inputs = inputs.New(transport, formats)
-
+	cli.Logs = logs.New(transport, formats)
 	cli.Outputs = outputs.New(transport, formats)
-
 	cli.Tokens = tokens.New(transport, formats)
-
 	cli.Tunnels = tunnels.New(transport, formats)
-
 	return cli
 }
 
@@ -115,15 +114,21 @@ func (cfg *TransportConfig) WithSchemes(schemes []string) *TransportConfig {
 
 // Openapi is a client for openapi
 type Openapi struct {
-	Buckets *buckets.Client
+	Buckets buckets.ClientService
 
-	Inputs *inputs.Client
+	Domains domains.ClientService
 
-	Outputs *outputs.Client
+	Functions functions.ClientService
 
-	Tokens *tokens.Client
+	Inputs inputs.ClientService
 
-	Tunnels *tunnels.Client
+	Logs logs.ClientService
+
+	Outputs outputs.ClientService
+
+	Tokens tokens.ClientService
+
+	Tunnels tunnels.ClientService
 
 	Transport runtime.ClientTransport
 }
@@ -131,15 +136,12 @@ type Openapi struct {
 // SetTransport changes the transport on the client and all its subresources
 func (c *Openapi) SetTransport(transport runtime.ClientTransport) {
 	c.Transport = transport
-
 	c.Buckets.SetTransport(transport)
-
+	c.Domains.SetTransport(transport)
+	c.Functions.SetTransport(transport)
 	c.Inputs.SetTransport(transport)
-
+	c.Logs.SetTransport(transport)
 	c.Outputs.SetTransport(transport)
-
 	c.Tokens.SetTransport(transport)
-
 	c.Tunnels.SetTransport(transport)
-
 }

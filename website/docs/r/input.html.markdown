@@ -50,6 +50,7 @@ resource "webhookrelay_input" "foo" {
 * `status_code` - (Optional) Specify what should Webhook Relay return to HTTP clients that call this endpoint.
 * `response_body` - (Optional) Response body can be any text, JSON or XML payload.
 * `headers` - (Optional) A map of headers and their values to be sent as a response to webhook.
+* `function_id` - (Optional) ID of the function that will be executed for this input
 
 ## Attributes Reference
 

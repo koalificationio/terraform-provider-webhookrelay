@@ -75,7 +75,6 @@ func resourceWebhookrelayBucket() *schema.Resource {
 			"default_input": {
 				Type:     schema.TypeList,
 				Computed: true,
-				MaxItems: 1,
 				Elem:     schemaInput(),
 			},
 			"delete_default_input": {

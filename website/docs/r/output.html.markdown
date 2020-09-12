@@ -89,6 +89,7 @@ resource "webhookrelay_output" "foo" {
 * `tls_verification` - (Optional) TLS verification for public endpoints.
 * `rules` - (Optional) Configuration for rules-based webhook filtering & routing. This is a JSON formatted string. See [WebhookRelay documentation][1] on how to configure rules
   See [Rules](#rules) below for details about JSON fields.
+* `function_id` - (Optional) ID of the function that will be executed for this output
 
 ## Attributes Reference
 

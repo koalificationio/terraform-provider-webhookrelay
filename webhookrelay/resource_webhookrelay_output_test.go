@@ -2,6 +2,7 @@ package webhookrelay
 
 import (
 	"fmt"
+	"regexp"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/acctest"
@@ -18,6 +19,8 @@ func TestAccWebhookrelayOutput_Basic(t *testing.T) {
 	bucketName := testAccPrefix + acctest.RandString(5)
 
 	resName := "webhookrelay_output.foo"
+
+	guidCheck := regexp.MustCompile("[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}")
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
@@ -38,6 +41,8 @@ func TestAccWebhookrelayOutput_Basic(t *testing.T) {
 						resName, "internal", "true"),
 					resource.TestCheckResourceAttrSet(
 						resName, "rules"),
+					resource.TestMatchResourceAttr(
+						resName, "function_id", guidCheck),
 				),
 			},
 			{
@@ -54,6 +59,8 @@ func TestAccWebhookrelayOutput_Basic(t *testing.T) {
 						resName, "tls_verification", "true"),
 					resource.TestCheckNoResourceAttr(
 						resName, "rules"),
+					resource.TestCheckNoResourceAttr(
+						resName, "function_id"),
 				),
 			},
 			{
@@ -64,6 +71,8 @@ func TestAccWebhookrelayOutput_Basic(t *testing.T) {
 						resName, "name", outputNewName),
 					resource.TestCheckResourceAttr(
 						resName, "description", "foo"),
+					resource.TestMatchResourceAttr(
+						resName, "function_id", guidCheck),
 				),
 			},
 		},
@@ -158,7 +167,16 @@ resource "webhookrelay_output" "foo" {
       },
     ]
   })
-}`, bucket, name)
+
+  function_id = webhookrelay_function.foo.id
+}
+
+resource "webhookrelay_function" "foo" {
+  name    = "%s"
+  payload = base64encode("r:SetRequestMethod('PUT')")
+  driver  = "lua"
+}
+`, bucket, name, name)
 }
 
 func testAccCheckWebhookrelayOutputConfigUpdated(name, bucket string) string {
@@ -175,5 +193,12 @@ resource "webhookrelay_output" "foo" {
   internal         = false
   tls_verification = true
   bucket_id        = webhookrelay_bucket.foo.id
-}`, bucket, name)
+}
+
+resource "webhookrelay_function" "foo" {
+  name    = "%s"
+  payload = base64encode("r:SetRequestMethod('PUT')")
+  driver  = "lua"
+}
+`, bucket, name, name)
 }

@@ -7,6 +7,7 @@ import (
 )
 
 const (
+	FileExtensionErb          = `.erb`
 	FileExtensionHtmlMarkdown = `.html.markdown`
 	FileExtensionHtmlMd       = `.html.md`
 	FileExtensionMarkdown     = `.markdown`
@@ -34,7 +35,7 @@ func LegacyFileExtensionCheck(path string) error {
 
 func RegistryFileExtensionCheck(path string) error {
 	if !FilePathEndsWithExtensionFrom(path, ValidRegistryFileExtensions) {
-		return fmt.Errorf("file does not end with a valid extension, valid extensions: %v", ValidLegacyFileExtensions)
+		return fmt.Errorf("file does not end with a valid extension, valid extensions: %v", ValidRegistryFileExtensions)
 	}
 
 	return nil

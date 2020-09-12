@@ -9,12 +9,11 @@ import (
 	"fmt"
 
 	"github.com/go-openapi/runtime"
-
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 )
 
 // New creates a new tokens API client.
-func New(transport runtime.ClientTransport, formats strfmt.Registry) *Client {
+func New(transport runtime.ClientTransport, formats strfmt.Registry) ClientService {
 	return &Client{transport: transport, formats: formats}
 }
 
@@ -26,8 +25,21 @@ type Client struct {
 	formats   strfmt.Registry
 }
 
+// ClientService is the interface for Client methods
+type ClientService interface {
+	DeleteV1TokensTokenID(params *DeleteV1TokensTokenIDParams) (*DeleteV1TokensTokenIDOK, error)
+
+	GetV1Tokens(params *GetV1TokensParams) (*GetV1TokensOK, error)
+
+	PostV1Tokens(params *PostV1TokensParams) (*PostV1TokensCreated, error)
+
+	PutV1TokensTokenID(params *PutV1TokensTokenIDParams) (*PutV1TokensTokenIDOK, error)
+
+	SetTransport(transport runtime.ClientTransport)
+}
+
 /*
-DeleteV1TokensTokenID deletes token
+  DeleteV1TokensTokenID deletes token
 */
 func (a *Client) DeleteV1TokensTokenID(params *DeleteV1TokensTokenIDParams) (*DeleteV1TokensTokenIDOK, error) {
 	// TODO: Validate the params before sending
@@ -61,7 +73,7 @@ func (a *Client) DeleteV1TokensTokenID(params *DeleteV1TokensTokenIDParams) (*De
 }
 
 /*
-GetV1Tokens lists all authentication tokens
+  GetV1Tokens lists all authentication tokens
 */
 func (a *Client) GetV1Tokens(params *GetV1TokensParams) (*GetV1TokensOK, error) {
 	// TODO: Validate the params before sending
@@ -95,7 +107,7 @@ func (a *Client) GetV1Tokens(params *GetV1TokensParams) (*GetV1TokensOK, error) 
 }
 
 /*
-PostV1Tokens creates a new authentication token
+  PostV1Tokens creates a new authentication token
 */
 func (a *Client) PostV1Tokens(params *PostV1TokensParams) (*PostV1TokensCreated, error) {
 	// TODO: Validate the params before sending
@@ -129,7 +141,7 @@ func (a *Client) PostV1Tokens(params *PostV1TokensParams) (*PostV1TokensCreated,
 }
 
 /*
-PutV1TokensTokenID updates token details
+  PutV1TokensTokenID updates token details
 */
 func (a *Client) PutV1TokensTokenID(params *PutV1TokensTokenIDParams) (*PutV1TokensTokenIDOK, error) {
 	// TODO: Validate the params before sending
