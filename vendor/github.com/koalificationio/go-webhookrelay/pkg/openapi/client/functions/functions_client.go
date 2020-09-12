@@ -29,13 +29,19 @@ type Client struct {
 type ClientService interface {
 	DeleteV1FunctionsFunctionID(params *DeleteV1FunctionsFunctionIDParams) (*DeleteV1FunctionsFunctionIDOK, error)
 
+	DeleteV1FunctionsFunctionIDConfigConfigKey(params *DeleteV1FunctionsFunctionIDConfigConfigKeyParams) (*DeleteV1FunctionsFunctionIDConfigConfigKeyOK, error)
+
 	GetV1Functions(params *GetV1FunctionsParams) (*GetV1FunctionsOK, error)
 
 	GetV1FunctionsFunctionID(params *GetV1FunctionsFunctionIDParams) (*GetV1FunctionsFunctionIDOK, error)
 
+	GetV1FunctionsFunctionIDConfig(params *GetV1FunctionsFunctionIDConfigParams) (*GetV1FunctionsFunctionIDConfigOK, error)
+
 	PostV1Functions(params *PostV1FunctionsParams) (*PostV1FunctionsCreated, error)
 
 	PutV1FunctionsFunctionID(params *PutV1FunctionsFunctionIDParams) (*PutV1FunctionsFunctionIDOK, error)
+
+	PutV1FunctionsFunctionIDConfig(params *PutV1FunctionsFunctionIDConfigParams) (*PutV1FunctionsFunctionIDConfigOK, error)
 
 	SetTransport(transport runtime.ClientTransport)
 }
@@ -71,6 +77,40 @@ func (a *Client) DeleteV1FunctionsFunctionID(params *DeleteV1FunctionsFunctionID
 	// unexpected success response
 	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for DeleteV1FunctionsFunctionID: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
+  DeleteV1FunctionsFunctionIDConfigConfigKey deletes function config value
+*/
+func (a *Client) DeleteV1FunctionsFunctionIDConfigConfigKey(params *DeleteV1FunctionsFunctionIDConfigConfigKeyParams) (*DeleteV1FunctionsFunctionIDConfigConfigKeyOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewDeleteV1FunctionsFunctionIDConfigConfigKeyParams()
+	}
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
+		ID:                 "DeleteV1FunctionsFunctionIDConfigConfigKey",
+		Method:             "DELETE",
+		PathPattern:        "/v1/functions/{functionID}/config/{configKey}",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"https"},
+		Params:             params,
+		Reader:             &DeleteV1FunctionsFunctionIDConfigConfigKeyReader{formats: a.formats},
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	})
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*DeleteV1FunctionsFunctionIDConfigConfigKeyOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for DeleteV1FunctionsFunctionIDConfigConfigKey: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
 
@@ -143,6 +183,40 @@ func (a *Client) GetV1FunctionsFunctionID(params *GetV1FunctionsFunctionIDParams
 }
 
 /*
+  GetV1FunctionsFunctionIDConfig lists all config values
+*/
+func (a *Client) GetV1FunctionsFunctionIDConfig(params *GetV1FunctionsFunctionIDConfigParams) (*GetV1FunctionsFunctionIDConfigOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewGetV1FunctionsFunctionIDConfigParams()
+	}
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
+		ID:                 "GetV1FunctionsFunctionIDConfig",
+		Method:             "GET",
+		PathPattern:        "/v1/functions/{functionID}/config",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"https"},
+		Params:             params,
+		Reader:             &GetV1FunctionsFunctionIDConfigReader{formats: a.formats},
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	})
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*GetV1FunctionsFunctionIDConfigOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for GetV1FunctionsFunctionIDConfig: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
   PostV1Functions creates a new function
 
   You may create your own functions using this action. It takes a JSON object containing a function request. Once function is created, you can  assign it based on its ID to bucket's input and/or output.
@@ -211,6 +285,42 @@ func (a *Client) PutV1FunctionsFunctionID(params *PutV1FunctionsFunctionIDParams
 	// unexpected success response
 	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for PutV1FunctionsFunctionID: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
+  PutV1FunctionsFunctionIDConfig updates function
+
+  Update or create function config variable.
+*/
+func (a *Client) PutV1FunctionsFunctionIDConfig(params *PutV1FunctionsFunctionIDConfigParams) (*PutV1FunctionsFunctionIDConfigOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewPutV1FunctionsFunctionIDConfigParams()
+	}
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
+		ID:                 "PutV1FunctionsFunctionIDConfig",
+		Method:             "PUT",
+		PathPattern:        "/v1/functions/{functionID}/config",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"https"},
+		Params:             params,
+		Reader:             &PutV1FunctionsFunctionIDConfigReader{formats: a.formats},
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	})
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*PutV1FunctionsFunctionIDConfigOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for PutV1FunctionsFunctionIDConfig: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
 

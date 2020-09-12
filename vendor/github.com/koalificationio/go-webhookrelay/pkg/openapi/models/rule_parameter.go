@@ -67,7 +67,7 @@ const (
 
 // prop value enum
 func (m *RuleParameter) validateSourceEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, ruleParameterTypeSourcePropEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, ruleParameterTypeSourcePropEnum, true); err != nil {
 		return err
 	}
 	return nil

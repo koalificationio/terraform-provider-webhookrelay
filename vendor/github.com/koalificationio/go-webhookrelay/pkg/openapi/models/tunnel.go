@@ -133,7 +133,7 @@ const (
 
 // prop value enum
 func (m *Tunnel) validateCryptoEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, tunnelTypeCryptoPropEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, tunnelTypeCryptoPropEnum, true); err != nil {
 		return err
 	}
 	return nil
@@ -182,7 +182,7 @@ const (
 
 // prop value enum
 func (m *Tunnel) validateRegionEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, tunnelTypeRegionPropEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, tunnelTypeRegionPropEnum, true); err != nil {
 		return err
 	}
 	return nil

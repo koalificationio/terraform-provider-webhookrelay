@@ -116,7 +116,7 @@ func init() {
 }
 
 func (m *IntegrationConfiguration) validateEventsItemsEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, integrationConfigurationEventsItemsEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, integrationConfigurationEventsItemsEnum, true); err != nil {
 		return err
 	}
 	return nil
@@ -163,7 +163,7 @@ const (
 
 // prop value enum
 func (m *IntegrationConfiguration) validatePluginEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, integrationConfigurationTypePluginPropEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, integrationConfigurationTypePluginPropEnum, true); err != nil {
 		return err
 	}
 	return nil
