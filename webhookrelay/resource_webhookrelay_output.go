@@ -56,7 +56,7 @@ func resourceWebhookrelayOutput() *schema.Resource {
 				Type:     schema.TypeString,
 				Optional: true,
 				ValidateFunc: validation.All(
-					validation.ValidateJsonString,
+					validation.StringIsJSON,
 					validateOutputRules,
 				),
 				StateFunc: func(v interface{}) string {
