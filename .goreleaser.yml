@@ -1,24 +1,58 @@
 project_name: terraform-provider-webhookrelay
 
+before:
+  hooks:
+    - go mod download
+
 builds:
-  - binary: terraform-provider-webhookrelay
-    env:
+  - env:
       - CGO_ENABLED=0
-      - GOFLAGS=-mod=vendor
+    mod_timestamp: '{{ .CommitTimestamp }}'
+    flags:
+      - -trimpath
+    ldflags:
+      - '-s -w -X main.version={{.Version}} -X main.commit={{.Commit}}'
     goos:
-      - darwin
+      - freebsd
+      - windows
       - linux
+      - darwin
     goarch:
       - amd64
-    ldflags: -extldflags '-static'
+      - '386'
+      - arm
+      - arm64
+    ignore:
+      - goos: darwin
+        goarch: '386'
+    binary: '{{ .ProjectName }}_{{ .Version }}'
 
 archives:
-  - format: binary
-    name_template: "{{.ProjectName}}-{{.Os}}-{{.Arch}}"
+  - format: zip
     files:
-      - nothing.*
+      - none*
+    name_template: '{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}'
+
+checksum:
+  name_template: '{{ .ProjectName }}_{{ .Version }}_SHA256SUMS'
+  algorithm: sha256
+
+signs:
+  - artifacts: checksum
+    args:
+      - "--batch"
+      - "--local-user"
+      - "{{ .Env.GPG_FINGERPRINT }}" 
+      - "--output"
+      - "${signature}"
+      - "--detach-sign"
+      - "${artifact}"
 
 release:
-  github:
-    owner: koalificationio
-    name: terraform-provider-webhookrelay
+  # github:
+  #   owner: koalificationio
+  #   name: terraform-provider-webhookrelay
+  disable: true
+
+changelog:
+  skip: true

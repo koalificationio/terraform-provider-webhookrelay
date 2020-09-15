@@ -23,11 +23,9 @@ matrix:
       name: "Dependencies"
       script: make depscheck
     - go: "1.14.x"
-      name: "Website"
+      name: "Docs"
       script:
         - make docscheck
-        # - make website-test
-        - make website-lint
 
 install:
   - make tools
@@ -35,12 +33,3 @@ install:
 branches:
   only:
     - master
-    - /^v.*$/
-
-deploy:
-  - provider: script
-    script: curl -sL https://git.io/goreleaser | bash
-    on:
-      tags: true
-      all_branches: true
-      condition: $TRAVIS_OS_NAME = linux

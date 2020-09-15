@@ -1,6 +1,4 @@
 ---
-layout: "webhookrelay"
-page_title: "Webhookrelay: webhookrelay_output"
 description: |-
   Manage Webhookrelay output.
 ---

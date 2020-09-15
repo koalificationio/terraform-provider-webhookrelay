@@ -1,6 +1,4 @@
 ---
-layout: "webhookrelay"
-page_title: "Webhookrelay: webhookrelay_function"
 description: |-
   Manage Webhookrelay function.
 ---
