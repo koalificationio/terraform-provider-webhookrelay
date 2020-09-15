@@ -49,10 +49,9 @@ signs:
       - "${artifact}"
 
 release:
-  # github:
-  #   owner: koalificationio
-  #   name: terraform-provider-webhookrelay
-  disable: true
+  github:
+    owner: koalificationio
+    name: terraform-provider-webhookrelay
 
 changelog:
   skip: true
