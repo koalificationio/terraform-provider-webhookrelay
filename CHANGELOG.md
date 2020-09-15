@@ -1,4 +1,6 @@
-## 0.1.3
+## 0.2.0
+
+First version to be released on terraform registry.
 
 ENHANCEMENTS:
 

@@ -1,6 +1,4 @@
 ---
-layout: "webhookrelay"
-page_title: "Webhookrelay: webhookrelay_token"
 description: |-
   Manage Webhookrelay token.
 ---
@@ -42,4 +40,4 @@ The `scopes` mapping provides following attributes:
 * `secret` - Token secret.
 
 ~> **Note:** Api Secret attribute will be stored in the raw state as plain-text.
-[Read more about sensitive data in state](/docs/state/sensitive-data.html).
+[Read more about sensitive data in state](https://www.terraform.io/docs/state/sensitive-data.html).

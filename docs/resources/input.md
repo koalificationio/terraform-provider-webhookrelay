@@ -1,6 +1,4 @@
 ---
-layout: "webhookrelay"
-page_title: "Webhookrelay: webhookrelay_input"
 description: |-
   Manage Webhookrelay input.
 ---

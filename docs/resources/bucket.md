@@ -1,6 +1,4 @@
 ---
-layout: "webhookrelay"
-page_title: "Webhookrelay: webhookrelay_bucket"
 description: |-
   Manage Webhookrelay bucket.
 ---
@@ -60,4 +58,4 @@ Bucket can be imported using the `id`, e.g.
 $ terraform import webhookrelay_bucket.foo e3cb4587-6e3d-4c64-9b50-e9c4c7ce27aa
 ```
 
-[1]: /docs/providers/webhookrelay/r/input.html
+[1]: /providers/koalificationio/webhookrelay/latest/docs/resources/input

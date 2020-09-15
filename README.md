@@ -4,10 +4,9 @@
 
 Terraform provider for [Webhookrelay](https://webhookrelay.com/)
 
-## Installing the Provider
-Download binary from releases and follow the instructions to [install it as a plugin](https://www.terraform.io/docs/plugins/basics.html#installing-a-plugin). After placing it into your plugins directory, run `terraform init` to initialize it.
+## Using the Provider
 
-Check documentation in [website](./website/docs) folder.
+For installation instructions and resource documentation check [provider page on terraform registry](https://registry.terraform.io/providers/koalificationio/webhookrelay/latest).
 
 ## Developing the Provider
 
@@ -48,4 +47,14 @@ In order to run the full suite of Acceptance tests, run `make testacc`.
 
 ```sh
 $ make testacc TESTARGS='-run='
+```
+
+## Releasing the Provider
+
+```shell
+$ fingerprint=$(gpg --with-colons --list-key <key@email> | awk -F: '$1 == "fpr" {print $10;}' | head -n 1)
+$ export GPG_FINGERPRINT="${fingerprint}"
+$ export GITHUB_TOKEN=xxx
+$ git tag v0.x.x -s
+$ goreleaser release --rm-dist
 ```
