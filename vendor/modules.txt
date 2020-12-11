@@ -82,12 +82,13 @@ github.com/bflad/tfproviderdocs/check
 github.com/bflad/tfproviderdocs/check/sidenavigation
 github.com/bflad/tfproviderdocs/command
 github.com/bflad/tfproviderdocs/version
-# github.com/bflad/tfproviderlint v0.18.0
+# github.com/bflad/tfproviderlint v0.21.0
 github.com/bflad/tfproviderlint/cmd/tfproviderlint
 github.com/bflad/tfproviderlint/helper/analysisutils
 github.com/bflad/tfproviderlint/helper/astutils
 github.com/bflad/tfproviderlint/helper/cmdflags
 github.com/bflad/tfproviderlint/helper/terraformtype
+github.com/bflad/tfproviderlint/helper/terraformtype/helper/acctest
 github.com/bflad/tfproviderlint/helper/terraformtype/helper/resource
 github.com/bflad/tfproviderlint/helper/terraformtype/helper/schema
 github.com/bflad/tfproviderlint/helper/terraformtype/helper/validation
@@ -100,6 +101,7 @@ github.com/bflad/tfproviderlint/passes/AT005
 github.com/bflad/tfproviderlint/passes/AT006
 github.com/bflad/tfproviderlint/passes/AT007
 github.com/bflad/tfproviderlint/passes/AT008
+github.com/bflad/tfproviderlint/passes/AT009
 github.com/bflad/tfproviderlint/passes/R001
 github.com/bflad/tfproviderlint/passes/R002
 github.com/bflad/tfproviderlint/passes/R003
@@ -117,6 +119,8 @@ github.com/bflad/tfproviderlint/passes/R014
 github.com/bflad/tfproviderlint/passes/R015
 github.com/bflad/tfproviderlint/passes/R016
 github.com/bflad/tfproviderlint/passes/R017
+github.com/bflad/tfproviderlint/passes/R018
+github.com/bflad/tfproviderlint/passes/R019
 github.com/bflad/tfproviderlint/passes/S001
 github.com/bflad/tfproviderlint/passes/S002
 github.com/bflad/tfproviderlint/passes/S003
@@ -162,11 +166,15 @@ github.com/bflad/tfproviderlint/passes/V005
 github.com/bflad/tfproviderlint/passes/V006
 github.com/bflad/tfproviderlint/passes/V007
 github.com/bflad/tfproviderlint/passes/V008
+github.com/bflad/tfproviderlint/passes/V009
+github.com/bflad/tfproviderlint/passes/V010
 github.com/bflad/tfproviderlint/passes/commentignore
+github.com/bflad/tfproviderlint/passes/helper/acctest/randstringfromcharsetcallexpr
 github.com/bflad/tfproviderlint/passes/helper/resource/retryfuncinfo
 github.com/bflad/tfproviderlint/passes/helper/resource/testcaseinfo
 github.com/bflad/tfproviderlint/passes/helper/schema/crudfuncinfo
 github.com/bflad/tfproviderlint/passes/helper/schema/resourcedatagetchangeassignstmt
+github.com/bflad/tfproviderlint/passes/helper/schema/resourcedatahaschangescallexpr
 github.com/bflad/tfproviderlint/passes/helper/schema/resourcedatapartialcallexpr
 github.com/bflad/tfproviderlint/passes/helper/schema/resourcedatapartialselectorexpr
 github.com/bflad/tfproviderlint/passes/helper/schema/resourcedatasetcallexpr
@@ -185,10 +193,13 @@ github.com/bflad/tfproviderlint/passes/helper/validation/iprangecallexpr
 github.com/bflad/tfproviderlint/passes/helper/validation/iprangeselectorexpr
 github.com/bflad/tfproviderlint/passes/helper/validation/singleipcallexpr
 github.com/bflad/tfproviderlint/passes/helper/validation/singleipselectorexpr
+github.com/bflad/tfproviderlint/passes/helper/validation/stringdoesnotmatchcallexpr
+github.com/bflad/tfproviderlint/passes/helper/validation/stringmatchcallexpr
 github.com/bflad/tfproviderlint/passes/helper/validation/validatejsonstringselectorexpr
 github.com/bflad/tfproviderlint/passes/helper/validation/validatelistuniquestringsselectorexpr
 github.com/bflad/tfproviderlint/passes/helper/validation/validateregexpselectorexpr
 github.com/bflad/tfproviderlint/passes/helper/validation/validaterfc3339timestringselectorexpr
+github.com/bflad/tfproviderlint/passes/stdlib/timesleepcallexpr
 github.com/bflad/tfproviderlint/passes/testaccfuncdecl
 github.com/bflad/tfproviderlint/passes/testfuncdecl
 github.com/bflad/tfproviderlint/version
