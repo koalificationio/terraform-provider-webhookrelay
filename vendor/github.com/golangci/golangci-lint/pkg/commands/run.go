@@ -47,9 +47,6 @@ func getDefaultDirectoryExcludeHelp() string {
 	return strings.Join(parts, "\n")
 }
 
-const welcomeMessage = "Run this tool in cloud on every github pull " +
-	"request in https://golangci.com for free (public repos)"
-
 func wh(text string) string {
 	return color.GreenString(text)
 }
@@ -80,7 +77,9 @@ func initFlagSet(fs *pflag.FlagSet, cfg *config.Config, m *lintersdb.Manager, is
 	fs.BoolVar(&oc.PrintIssuedLine, "print-issued-lines", true, wh("Print lines of code with issue"))
 	fs.BoolVar(&oc.PrintLinterName, "print-linter-name", true, wh("Print linter name in issue line"))
 	fs.BoolVar(&oc.UniqByLine, "uniq-by-line", true, wh("Make issues output unique by line"))
+	fs.BoolVar(&oc.SortResults, "sort-results", false, wh("Sort linter results"))
 	fs.BoolVar(&oc.PrintWelcomeMessage, "print-welcome", false, wh("Print welcome message"))
+	fs.StringVar(&oc.PathPrefix, "path-prefix", "", wh("Path prefix to add to output"))
 	hideFlag("print-welcome") // no longer used
 
 	// Run config
@@ -109,6 +108,9 @@ func initFlagSet(fs *pflag.FlagSet, cfg *config.Config, m *lintersdb.Manager, is
 	const allowParallelDesc = "Allow multiple parallel golangci-lint instances running. " +
 		"If false (default) - golangci-lint acquires file lock on start."
 	fs.BoolVar(&rc.AllowParallelRunners, "allow-parallel-runners", false, wh(allowParallelDesc))
+	const allowSerialDesc = "Allow multiple golangci-lint instances running, but serialize them	around a lock. " +
+		"If false (default) - golangci-lint exits with an error if it fails to acquire file lock on start."
+	fs.BoolVar(&rc.AllowSerialRunners, "allow-serial-runners", false, wh(allowSerialDesc))
 
 	// Linters settings config
 	lsc := &cfg.LintersSettings
@@ -153,12 +155,27 @@ func initFlagSet(fs *pflag.FlagSet, cfg *config.Config, m *lintersdb.Manager, is
 		150, "Dupl: Minimal threshold to detect copy-paste")
 	hideFlag("dupl.threshold")
 
+	fs.BoolVar(&lsc.Goconst.MatchWithConstants, "goconst.match-constant",
+		true, "Goconst: look for existing constants matching the values")
+	hideFlag("goconst.match-constant")
 	fs.IntVar(&lsc.Goconst.MinStringLen, "goconst.min-len",
 		3, "Goconst: minimum constant string length")
 	hideFlag("goconst.min-len")
 	fs.IntVar(&lsc.Goconst.MinOccurrencesCount, "goconst.min-occurrences",
 		3, "Goconst: minimum occurrences of constant string count to trigger issue")
 	hideFlag("goconst.min-occurrences")
+	fs.BoolVar(&lsc.Goconst.ParseNumbers, "goconst.numbers",
+		false, "Goconst: search also for duplicated numbers")
+	hideFlag("goconst.numbers")
+	fs.IntVar(&lsc.Goconst.NumberMin, "goconst.min",
+		3, "minimum value, only works with goconst.numbers")
+	hideFlag("goconst.min")
+	fs.IntVar(&lsc.Goconst.NumberMax, "goconst.max",
+		3, "maximum value, only works with goconst.numbers")
+	hideFlag("goconst.max")
+	fs.BoolVar(&lsc.Goconst.IgnoreCalls, "goconst.ignore-calls",
+		true, "Goconst: ignore when constant is not used as function argument")
+	hideFlag("goconst.ignore-calls")
 
 	// (@dixonwille) These flag is only used for testing purposes.
 	fs.StringSliceVar(&lsc.Depguard.Packages, "depguard.packages", nil,
@@ -232,6 +249,7 @@ func (e *Executor) getConfigForCommandLine() (*config.Config, error) {
 	// Use another config variable here, not e.cfg, to not
 	// affect main parsing by this parsing of only config option.
 	initFlagSet(fs, &cfg, e.DBManager, false)
+	initVersionFlagSet(fs, &cfg)
 
 	// Parse max options, even force version option: don't want
 	// to get access to Executor here: it's error-prone to use
@@ -253,7 +271,7 @@ func (e *Executor) getConfigForCommandLine() (*config.Config, error) {
 func (e *Executor) initRun() {
 	e.runCmd = &cobra.Command{
 		Use:   "run",
-		Short: welcomeMessage,
+		Short: "Run the linters",
 		Run:   e.executeRun,
 		PreRun: func(_ *cobra.Command, _ []string) {
 			if ok := e.acquireFileLock(); !ok {
@@ -266,7 +284,8 @@ func (e *Executor) initRun() {
 	}
 	e.rootCmd.AddCommand(e.runCmd)
 
-	e.runCmd.SetOutput(logutils.StdOut) // use custom output to properly color it in Windows terminals
+	e.runCmd.SetOut(logutils.StdOut) // use custom output to properly color it in Windows terminals
+	e.runCmd.SetErr(logutils.StdErr)
 
 	e.initRunConfiguration(e.runCmd)
 }
@@ -446,8 +465,8 @@ func (e *Executor) executeRun(_ *cobra.Command, args []string) {
 
 // to be removed when deadline is finally decommissioned
 func (e *Executor) setTimeoutToDeadlineIfOnlyDeadlineIsSet() {
-	//lint:ignore SA1019 We want to promoted the deprecated config value when needed
-	deadlineValue := e.cfg.Run.Deadline // nolint:staticcheck
+	// nolint:staticcheck
+	deadlineValue := e.cfg.Run.Deadline
 	if deadlineValue != 0 && e.cfg.Run.Timeout == defaultTimeout {
 		e.cfg.Run.Timeout = deadlineValue
 	}
