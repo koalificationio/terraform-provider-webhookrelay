@@ -28,8 +28,8 @@ You may obtain a copy of the License [here](http://www.apache.org/licenses/LICEN
 ### CI Installation
 
 ```bash
-# binary will be $GOPATH/bin/gosec
-curl -sfL https://raw.githubusercontent.com/securego/gosec/master/install.sh | sh -s -- -b $GOPATH/bin vX.Y.Z
+# binary will be $(go env GOPATH)/bin/gosec
+curl -sfL https://raw.githubusercontent.com/securego/gosec/master/install.sh | sh -s -- -b $(go env GOPATH)/bin vX.Y.Z
 
 # or install it into ./bin/
 curl -sfL https://raw.githubusercontent.com/securego/gosec/master/install.sh | sh -s vX.Y.Z
@@ -41,7 +41,7 @@ wget -O - -q https://raw.githubusercontent.com/securego/gosec/master/install.sh 
 # then you will have to download a tar.gz file for your operating system instead of a binary file
 wget https://github.com/securego/gosec/releases/download/vX.Y.Z/gosec_vX.Y.Z_OS.tar.gz
 
-# The file will be in the current folder where you run the command 
+# The file will be in the current folder where you run the command
 # and you can check the checksum like this
 echo "<check sum from the check sum file>  gosec_vX.Y.Z_OS.tar.gz" | sha256sum -c -
 
@@ -66,7 +66,7 @@ jobs:
     env:
       GO111MODULE: on
     steps:
-      - name: Checkout Source 
+      - name: Checkout Source
         uses: actions/checkout@v2
       - name: Run Gosec Security Scanner
         uses: securego/gosec@master
@@ -74,10 +74,46 @@ jobs:
           args: ./...
 ```
 
+### Integrating with code scanning
+
+You can [integrate third-party code analysis tools](https://docs.github.com/en/github/finding-security-vulnerabilities-and-errors-in-your-code/integrating-with-code-scanning) with GitHub code scanning by uploading data as SARIF files.
+
+The workflow shows an example of running the `gosec` as a step in a GitHub action workflow which outputs the `results.sarif` file. The workflow then uploads the `results.sarif` file to GitHub using the `upload-sarif` action.
+
+```yaml
+name: "Security Scan"
+
+# Run workflow each time code is pushed to your repository and on a schedule.
+# The scheduled workflow runs every at 00:00 on Sunday UTC time.
+on:
+  push:
+  schedule:
+  - cron: '0 0 * * 0'
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    env:
+      GO111MODULE: on
+    steps:
+      - name: Checkout Source
+        uses: actions/checkout@v2
+      - name: Run Gosec Security Scanner
+        uses: securego/gosec@master
+        with:
+          # we let the report trigger content trigger a failure using the GitHub Security features.
+          args: '-no-fail -fmt sarif -out results.sarif ./...'
+      - name: Upload SARIF file
+        uses: github/codeql-action/upload-sarif@v1
+        with:
+          # Path to SARIF file relative to the root of the repository
+          sarif_file: results.sarif
+```
+
 ### Local Installation
 
 ```bash
-go get github.com/securego/gosec/cmd/gosec
+go get github.com/securego/gosec/v2/cmd/gosec
 ```
 
 ## Usage
@@ -107,18 +143,18 @@ directory you can supply `./...` as the input argument.
 - G302: Poor file permissions used with chmod
 - G303: Creating tempfile using a predictable path
 - G304: File path provided as taint input
-- G305: File traversal when extracting zip archive
+- G305: File traversal when extracting zip/tar archive
 - G306: Poor file permissions used when writing to a new file
 - G307: Deferring a method which returns an error
 - G401: Detect the usage of DES, RC4, MD5 or SHA1
 - G402: Look for bad TLS connection settings
 - G403: Ensure minimum RSA key length of 2048 bits
 - G404: Insecure random number source (rand)
-- G501: Import blacklist: crypto/md5
-- G502: Import blacklist: crypto/des
-- G503: Import blacklist: crypto/rc4
-- G504: Import blacklist: net/http/cgi
-- G505: Import blacklist: crypto/sha1
+- G501: Import blocklist: crypto/md5
+- G502: Import blocklist: crypto/des
+- G503: Import blocklist: crypto/rc4
+- G504: Import blocklist: net/http/cgi
+- G505: Import blocklist: crypto/sha1
 - G601: Implicit memory aliasing of items from a range statement
 
 ### Retired rules
@@ -139,7 +175,7 @@ $ gosec -exclude=G303 ./...
 ```
 ### CWE Mapping
 
-Every issue detected by `gosec` is mapped to a [CWE (Common Weakness Enumeration)](http://cwe.mitre.org/data/index.html) which describes in more generic terms the vulnerability. The exact mapping can be found  [here](https://github.com/securego/gosec/blob/53be8dd8644ee48802114178cff6eb7e29757414/issue.go#L49).
+Every issue detected by `gosec` is mapped to a [CWE (Common Weakness Enumeration)](http://cwe.mitre.org/data/index.html) which describes in more generic terms the vulnerability. The exact mapping can be found  [here](https://github.com/securego/gosec/blob/master/issue.go#L49).
 
 ### Configuration
 
@@ -161,7 +197,7 @@ A number of global settings can be provided in a configuration file as follows:
 # Run with a global configuration file
 $ gosec -conf config.json .
 ```
-Also some rules accept configuration. For instance on rule `G104`, it is possible to define packages along with a list 
+Also some rules accept configuration. For instance on rule `G104`, it is possible to define packages along with a list
 of functions which will be skipped when auditing the not checked errors:
 
 ```JSON
@@ -178,22 +214,22 @@ You can also configure the hard-coded credentials rule `G101` with additional pa
 {
     "G101": {
         "pattern": "(?i)passwd|pass|password|pwd|secret|private_key|token",
-         "ingnore_entropy": false,
+         "ignore_entropy": false,
          "entropy_threshold": "80.0",
          "per_char_threshold": "3.0",
-         "trucate": "32"
+         "truncate": "32"
     }
 }
 ```
 
-### Dependencies 
+### Dependencies
 
 gosec will fetch automatically the dependencies of the code which is being analyzed when go module is turned on (e.g.` GO111MODULE=on`). If this is not the case,
 the dependencies need to be explicitly downloaded by running the `go get -d` command before the scan.
 
 ### Excluding test files and folders
 
-gosec will ignore test files across all packages and any dependencies in your vendor directory. 
+gosec will ignore test files across all packages and any dependencies in your vendor directory.
 
 The scanning of test files can be enabled with the following flag:
 
@@ -233,7 +269,7 @@ func main(){
 ```
 
 When a specific false positive has been identified and verified as safe, you may wish to suppress only that single rule (or a specific set of rules)
-within a section of code, while continuing to scan for other problems. To do this, you can list the rule(s) to be suppressed within 
+within a section of code, while continuing to scan for other problems. To do this, you can list the rule(s) to be suppressed within
 the `#nosec` annotation, e.g: `/* #nosec G401 */` or `// #nosec G201 G202 G203`
 
 In some cases you may also want to revisit places where `#nosec` annotations
@@ -300,12 +336,13 @@ You can also build locally the docker image by using the command:
 make image
 ```
 
-You can run the `gosec` tool in a container against your local Go project. You only have to mount the project 
+You can run the `gosec` tool in a container against your local Go project. You only have to mount the project
 into a volume as follows:
 
 ```bash
-docker run -it -v <YOUR PROJECT PATH>/<PROJECT>:/<PROJECT> securego/gosec /<PROJECT>/...
+docker run --rm -it -w /<PROJECT>/ -v <YOUR PROJECT PATH>/<PROJECT>:/<PROJECT> securego/gosec /<PROJECT>/...
 ```
+**Note:** the current working directory needs to be set with `-w` option in order to get successfully resolved the dependencies from go module file 
 
 ### Generate TLS rule
 
@@ -314,7 +351,7 @@ The configuration of TLS rule can be generated from [Mozilla's TLS ciphers recom
 First you need to install the generator tool:
 
 ```bash
-go get github.com/securego/gosec/cmd/tlsconfig/...
+go get github.com/securego/gosec/v2/cmd/tlsconfig/...
 ```
 
 You can invoke now the `go generate` in the root of the project:
@@ -324,3 +361,7 @@ go generate ./...
 ```
 
 This will generate the `rules/tls_config.go` file which will contain the current ciphers recommendation from Mozilla.
+
+## Who is using gosec?
+
+This is a [list](USERS.md) with some of the gosec's users.

@@ -3,7 +3,7 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-// Package checker defines the implementation of the checker commands.
+// Package goanalysis defines the implementation of the checker commands.
 // The same code drives the multi-analysis driver, the single-analysis
 // driver that is conventionally provided for convenience along with
 // each analysis package, and the test driver.
@@ -935,7 +935,8 @@ func sizeOfReflectValueTreeBytes(rv reflect.Value, visitedPtrs map[uintptr]struc
 		return rv.Len()
 	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64,
 		reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64,
-		reflect.Uintptr, reflect.Bool, reflect.Float32, reflect.Float64, reflect.UnsafePointer:
+		reflect.Uintptr, reflect.Bool, reflect.Float32, reflect.Float64,
+		reflect.Complex64, reflect.Complex128, reflect.Func, reflect.UnsafePointer:
 		return int(rv.Type().Size())
 	case reflect.Invalid:
 		return 0
