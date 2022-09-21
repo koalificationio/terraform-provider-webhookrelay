@@ -3,7 +3,7 @@ module github.com/koalificationio/terraform-provider-webhookrelay
 go 1.13
 
 require (
-	github.com/bflad/tfproviderdocs v0.7.0
+	github.com/bflad/tfproviderdocs v0.8.0
 	github.com/bflad/tfproviderlint v0.18.0
 	github.com/client9/misspell v0.3.4
 	github.com/go-openapi/strfmt v0.20.0
